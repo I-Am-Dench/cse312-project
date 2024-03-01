@@ -1,23 +1,17 @@
-FROM python:3.8
+FROM nikolaik/python-nodejs:latest
+
+
 ENV HOME /root
+ENV FLASK_APP ${HOME}/server
+
 WORKDIR /root
 
+COPY . .
 
-RUN apt-get update
-# Install Node
-RUN apt-get update --fix-missing
-RUN apt-get install -y nodejs
-RUN apt-get install -y npm
-
-# Copt the file into client
-COPY ./client .
-RUN cd client
-RUN npm install
-
-# moves the build into work dir
-RUN npm run build && mv dist ../
-#removes the client file.
-RUN rm -rf client
-
+RUN pip3 install -r requirements.txt
+RUN cd client && npm install && npm run build
 
 EXPOSE 8080
+
+CMD flask run --host=0.0.0.0 --port=8080
+
