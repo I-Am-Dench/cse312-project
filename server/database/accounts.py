@@ -38,7 +38,7 @@ def update_account_password(email: str, password: str) -> bool:
 # Util functions
 
 _EMAIL_LOCAL_PATTERN = re.compile(r"[\w!#$%&'*+/=?^`{|}~-]+(\.[\w!#$%&'*+/=?^`{|}~-]+)*$")
-_EMAIL_DOMAIN_PATTERN = re.compile(r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$")
+_EMAIL_DOMAIN_PATTERN = re.compile(r"[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$")
 
 def is_valid_email(email: str) -> bool:
     parts = email.split('@', 1)
