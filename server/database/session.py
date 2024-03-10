@@ -23,4 +23,4 @@ def createSession(userID):
         {"token": bcrypt.hashpw(token, bcrypt.gensalt()), "expiresIn": expires}
     )
 
-    return {"token": token, "Expires": expires}
+    return {"token": token, "expires": expires}
