@@ -24,3 +24,11 @@ def createSession(userID):
     )
 
     return {"token": token, "expires": expires}
+
+
+def validateSession(token):
+    t = bcrypt.hashpw(token, bcrypt.gensalt())
+
+    bv = sessionCollection.find_one({"token": t})
+
+    return bv
