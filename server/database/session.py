@@ -20,15 +20,17 @@ def createSession(userID):
     expires = datetime.datetime.utcnow()
 
     bv = sessionCollection.insert_one(
-        {"token": bcrypt.hashpw(token, bcrypt.gensalt()), "expiresIn": expires}
+        {
+            "token": bcrypt.hashpw(token, bcrypt.gensalt()),
+            "expiresIn": expires,
+            "uid": userID,
+        }
     )
-
     return {"token": token, "expires": expires}
 
 
 def validateSession(token):
-    t = bcrypt.hashpw(token, bcrypt.gensalt())
-
-    bv = sessionCollection.find_one({"token": t})
-
-    return bv
+    decoded = jwt.decode(token.decode("utf-8"))
+    uid = decoded.get("uid")
+    collection = sessionCollection.find_one({"uid": uid})
+    return bcrypt.checkpw(token, collection["token"])
