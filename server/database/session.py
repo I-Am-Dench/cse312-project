@@ -3,8 +3,9 @@ import jwt
 import datetime
 import bcrypt
 
+EXPIRES = 3600
 sessionCollection = db["session"]
-sessionCollection.create_index("expiresIn", expireAfterSeconds=3600)
+sessionCollection.create_index("expiresIn", expireAfterSeconds=EXPIRES)
 
 
 def create_session_token(userID):
@@ -26,7 +27,7 @@ def createSession(userID):
             "uid": userID,
         }
     )
-    return {"token": token, "expires": expires}
+    return {"token": token, "expires": EXPIRES}
 
 
 def validateSession(token):
