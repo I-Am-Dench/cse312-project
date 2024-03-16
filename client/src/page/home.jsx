@@ -1,6 +1,6 @@
 import { Flex, Link } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
-import Home from './Components/Home.jsx';
+import Home from '../Components/Home.jsx';
 
 function App() {
   return (

@@ -3,7 +3,7 @@ import {
   createRoutesFromElements,
   Route,
 } from 'react-router-dom';
-import App from './App';
+import App from './page/home';
 import Layout from './layout/Layout';
 
 const router = createHashRouter(
