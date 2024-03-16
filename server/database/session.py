@@ -1,4 +1,4 @@
-from database import db
+from . import db
 import jwt
 import datetime
 import bcrypt
