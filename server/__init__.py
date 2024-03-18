@@ -26,15 +26,24 @@ def create_app(test_config=None):
         email = request.authorization.get('username', '')
         password = request.authorization.get('password', '')
 
-        if accounts.check_credentials(email, password) is None:
+        account = accounts.check_credentials(email, password)
+        if account is None:
             return jsonify({'error': "Invalid email and/or password"}), client.NOT_FOUND
         
-        # HANDLE SESSION CREATION
+        sess = session.createSession(account.get('username', ''))
 
-        return "", client.OK
+        response = Response(status=client.OK)
+        # set secure=True if we move over to HTTPS
+        response.set_cookie('AUTH_TOKEN', sess['token'], expires=sess['expires'], httponly=True, samesite='Lax')
+
+        return response
 
     @app.route('/auth/logout', methods=['POST'])
     def auth_logout():
+        token = request.cookies.get('AUTH_TOKEN', None)
+        if token is not None:
+            session.delete_session(token)
+        
         return "", client.NO_CONTENT
 
     @app.route('/api/users', methods=['POST'])
@@ -52,10 +61,10 @@ def create_app(test_config=None):
             return jsonify({'error': "Invalid password"}), client.BAD_REQUEST
         
         if accounts.find_account_by_email(email) is not None:
-            return jsonify({'error': f"Email is already in use"}), client.CONFLICT
+            return jsonify({'error': "Email is already in use"}), client.CONFLICT
 
         if not accounts.create_account(email, username, password):
-            return jsonify({'error': f"Username is already in use"}), client.CONFLICT
+            return jsonify({'error': "Username is already in use"}), client.CONFLICT
         
         return jsonify({'username': username}), client.CREATED
     

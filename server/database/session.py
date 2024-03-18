@@ -29,6 +29,8 @@ def createSession(userID):
     )
     return {"token": token, "expires": EXPIRES}
 
+def delete_session(token):
+    sessionCollection.delete_one({'token': token})
 
 def validateSession(token):
     decoded = jwt.decode(token.decode("utf-8"))
