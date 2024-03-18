@@ -38,7 +38,9 @@ function Navigation() {
         </BreadcrumbLink>
       </BreadcrumbItem>
       <BreadcrumbItem>
-        <BreadcrumbLink>Login</BreadcrumbLink>
+        <BreadcrumbLink as={NavLink} to="login">
+          Login
+        </BreadcrumbLink>
       </BreadcrumbItem>
     </Breadcrumb>
   );
