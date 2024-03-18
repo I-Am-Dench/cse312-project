@@ -3,13 +3,15 @@ import {
   createRoutesFromElements,
   Route,
 } from 'react-router-dom';
-import App from './page/home';
+import Home from './page/Home';
+import Register from './page/Register';
 import Layout from './layout/Layout';
 
 const router = createHashRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
-      <Route index element={<App />}></Route>
+      <Route index element={<Home />}></Route>
+      <Route path="register" element={<Register />}></Route>
     </Route>
   )
 );

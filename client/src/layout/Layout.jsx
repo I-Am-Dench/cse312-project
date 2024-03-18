@@ -28,12 +28,12 @@ function Navigation() {
   return (
     <Breadcrumb>
       <BreadcrumbItem>
-        <BreadcrumbLink as={NavLink} to="#">
+        <BreadcrumbLink as={NavLink} to="/">
           Home
         </BreadcrumbLink>
       </BreadcrumbItem>
       <BreadcrumbItem>
-        <BreadcrumbLink as={NavLink} to="#">
+        <BreadcrumbLink as={NavLink} to="register">
           Register
         </BreadcrumbLink>
       </BreadcrumbItem>
