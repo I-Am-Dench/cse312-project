@@ -1,55 +1,61 @@
-.Home {
+*{
     margin: 0;
     padding: 0;
     font-family: sans-serif;
     font-style: bold;
+    box-sizing: border-box;
 }
 
-.background {
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
+body{
+    background: #ff000000;
+    background-color: rgb(54, 51, 51);
+    color: white;
 }
 
-.navbar l {
+.header{
     width: 100%;
-    background-color: var(--navbar);
-    margin: 0;
+    margin: auto;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-menu{
     display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
-.navbar ul li {
+.nav-menu li{
     list-style: none;
     display: inline-block;
     margin: 0 20px;
     position: relative;
 }
-
-.navbar ul li a{
+.nav-menu li a{
     text-decoration: none;
-    color: var(--navbar-text);
+    color: #ffffff;
     text-transform: uppercase;
-    position: relative;
 }
-
-.title {
-    position: center;
-}
-
-.navbar ul li::after{
+.nav-menu li::after{
     content: '';
-    height: 4px;
+    height: 3px;
     width: 0;
-    background: var(--black);
+    background: #f0a910;
     position: absolute;
     left: 0;
-    bottom: -5px;
+    bottom: -10px;
     transition: 0.5s;
 }
-
-.navbar ul li:hover::after{
+.nav-menu li:hover::after{
     width: 100%;
+}
+
+.board-container {
+    background-color: rgb(27, 26, 26);
+    width: 70vh;
+    height: 70vh; 
+    margin: auto;
+    padding: 1rem;
+    border: 1px solid #ffffff;
 }

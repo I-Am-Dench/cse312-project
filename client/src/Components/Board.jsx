@@ -2,23 +2,22 @@ import './Board.css';
 
 const Board = () => {
     return(
-        <div className='Board'>
-            <div className="background">
-                <div className = "navbar">
-                    <ul className='links'>
-                        <li><a href="/">Home</a></li>
-                        <li>Settings</li>
-                    </ul>
+        <div className='Home'>
+                <div className='header'>
+                    <div className='nav-menu'>
+                        <h3>JesseFanClub</h3>
+                        <ul>
+                            <li><a>Home</a></li>
+                            <li><button>Settings</button></li>
+                        </ul>
+                    </div>
                 </div>
-                <h1>JesseFanClub's web project</h1>
-                <image src='./coolguy.jpeg'/>
-
-                <div className='chatSection'>
-                    <labal>Chat: </labal>
-                    <br></br>
-                    <button onclick=''>Send</button>
-                </div>
-            </div>
+                <h1>Board Title</h1>
+                <body>
+                    <div className='comments'>
+                        
+                    </div>
+                </body>
         </div>
     )
 }

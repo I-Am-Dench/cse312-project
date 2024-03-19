@@ -3,17 +3,28 @@ import './Home.css';
 const Home = () => {
     return(
         <div className='Home'>
-            <div className="background">
-                <div className = "navbar">
-                    <ul className='links'>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/login">Login</a></li>
-                        <li><a href="/login">Register</a></li>
-                    </ul>
-            </div>
-                <h1>JesseFanClub's web project</h1>
-                <image src='./coolguy.jpeg'/>
-            </div>
+                <div className='header'>
+                    <div className='nav-menu'>
+                        <h3>JesseFanClub</h3>
+                        <ul>
+                            <li><a>Home</a></li>
+                            <li><a>Login</a></li>
+                            <li><a>Register</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <body>
+                    <div className="board-container">
+                        <h2>Boards</h2>
+                        <br></br>
+                        <p>Lorem Ipsum Dolor</p>
+                        <p>Lorem Ipsum Dolor</p>
+                        <p>Lorem Ipsum Dolor</p>
+                        <p>Lorem Ipsum Dolor</p>
+                        <p>Lorem Ipsum Dolor</p>
+                        <p>Lorem Ipsum Dolor</p>
+                    </div>
+                </body>
         </div>
     )
 }
