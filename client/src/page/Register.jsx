@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import coolguy from '../assets/coolguy.jpg';
 import useAuth from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 export default function Register() {
   return (
     <Flex justifyContent="space-evenly">
@@ -23,14 +24,22 @@ function RegisterForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [msg, setMsg] = useState('');
+  const navigate = useNavigate();
   function handleChangeValue(event, onSetValue) {
     onSetValue(event.target.value);
   }
-  function handleSubmit() {
+  async function handleSubmit() {
     if (password === confirm) {
-      register(username, email, password);
+      const [success, message] = await register(username, email, password);
+      if (success) {
+        console.log(success);
+        navigate('/');
+      } else {
+      }
     }
   }
+
   return (
     <Flex direction={'column'} padding="20px" maxWidth="500px" flexGrow="1">
       <Flex flexGrow="1" direction="column" justifyContent="space-evenly">

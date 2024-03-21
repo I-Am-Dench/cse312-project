@@ -28,10 +28,6 @@ export function AuthProvider({ children }) {
       const response = await fetch('/auth/logout', {
         method: 'POST',
       });
-
-      if (response.ok) {
-        setUser(false);
-      }
     } catch (err) {
       console.error(err);
     }
@@ -40,7 +36,6 @@ export function AuthProvider({ children }) {
   async function register(username, email, password) {
     if (user) return;
     try {
-      console.log('we are here');
       const response = await fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -51,13 +46,18 @@ export function AuthProvider({ children }) {
         }),
       });
 
-      if (response.ok) {
+      const json = await response.json();
+      if (json.hasOwnProperty('username')) {
         setUser(true);
-        console.log(user);
+        return true, json.username;
+      } 
+      if(json.hasOwnProperty('error')){
+        return false, json.error
       }
     } catch (err) {
       console.error(err);
     }
+    return false, 'FAILED TO CONTACT SERVER...';
   }
   const value = { login, logout, register, user };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
