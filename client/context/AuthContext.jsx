@@ -4,7 +4,7 @@ import { createContext } from 'react';
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState(null);
 
   async function login(username, password) {
     if (user) return;
@@ -15,7 +15,6 @@ export function AuthProvider({ children }) {
       });
 
       if (response.ok) {
-        setUser(true);
       }
     } catch (err) {
       console.error(err);
@@ -34,7 +33,7 @@ export function AuthProvider({ children }) {
   }
 
   async function register(username, email, password) {
-    if (user) return;
+    if (user) return [false, 'already logged in'];
     try {
       const response = await fetch('/api/users', {
         method: 'POST',
@@ -47,17 +46,18 @@ export function AuthProvider({ children }) {
       });
 
       const json = await response.json();
+      console.log(json.error);
       if (json.hasOwnProperty('username')) {
-        setUser(true);
-        return true, json.username;
-      } 
-      if(json.hasOwnProperty('error')){
-        return false, json.error
+        setUser(json.username);
+        return [true, json.username];
+      }
+      if (json.hasOwnProperty('error')) {
+        return [false, json.error];
       }
     } catch (err) {
       console.error(err);
     }
-    return false, 'FAILED TO CONTACT SERVER...';
+    return [false, 'FAILED TO CONTACT SERVER...'];
   }
   const value = { login, logout, register, user };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
