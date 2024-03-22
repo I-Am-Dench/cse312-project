@@ -10,8 +10,7 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import coolguy from '../assets/coolguy.jpg';
-import useAuth from '../../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 export default function Register() {
   return (
     <Flex justifyContent="space-evenly">
@@ -21,7 +20,7 @@ export default function Register() {
   );
 }
 function RegisterForm() {
-  const { register } = useAuth();
+  const { register } = useOutletContext();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +33,6 @@ function RegisterForm() {
   async function handleSubmit() {
     if (password === confirm && password !== '') {
       const [success, message] = await register(username, email, password);
-      console.log(success, message);
       if (success) {
         navigate('/');
       } else {
