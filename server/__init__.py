@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify, Response
 from http import client
+import json 
 
 from .database import accounts, session
 
 def create_app(test_config=None):
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='./static', static_url_path='/')
 
     @app.after_request
     def apply_no_sniff(response):
@@ -12,9 +13,9 @@ def create_app(test_config=None):
         return response
     
     @app.route('/')
-    def serve():
-        return "<h1>Hello, world!</h1>", 200
-    
+    def send_index():
+        return app.send_static_file('index.html')
+
     @app.route('/auth/login', methods=['POST'])
     def auth_login():
         if request.authorization is None:
@@ -35,7 +36,8 @@ def create_app(test_config=None):
         response = Response(status=client.OK)
         # set secure=True if we move over to HTTPS
         response.set_cookie('AUTH_TOKEN', sess['token'], expires=sess['expires'], httponly=True, samesite='Lax')
-
+        
+        response.set_data(json.dumps({'username': account['username']}))
         return response
 
     @app.route('/auth/logout', methods=['POST'])

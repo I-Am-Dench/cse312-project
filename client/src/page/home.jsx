@@ -1,8 +1,7 @@
 import { Flex, Link } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
-import Home from '../Components/Home.jsx';
 
-function App() {
+function Home() {
   return (
     <Flex justifyContent={'center'}>
       <Link as={RouterLink} to="/">
@@ -12,4 +11,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
