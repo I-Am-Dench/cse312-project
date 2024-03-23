@@ -72,7 +72,7 @@ export default function Layout() {
       <Flex margin="20px">
         <Text fontSize="xl">Jesse Fan Club's web project</Text>
         <Spacer />
-        <Navigation />
+        {user ? <PrivateNavigation /> : <PublicNavigation />}
       </Flex>
       <main>
         <Outlet context={value} />
@@ -80,7 +80,8 @@ export default function Layout() {
     </div>
   );
 }
-function Navigation() {
+
+function PublicNavigation() {
   return (
     <Breadcrumb>
       <BreadcrumbItem>
@@ -96,6 +97,23 @@ function Navigation() {
       <BreadcrumbItem>
         <BreadcrumbLink as={NavLink} to="login">
           Login
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+    </Breadcrumb>
+  );
+}
+function PrivateNavigation() {
+  return (
+    <Breadcrumb>
+      <BreadcrumbItem>
+        <BreadcrumbLink as={NavLink} to="/">
+          Home
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+
+      <BreadcrumbItem>
+        <BreadcrumbLink as={NavLink} to="settings">
+          Settings
         </BreadcrumbLink>
       </BreadcrumbItem>
     </Breadcrumb>

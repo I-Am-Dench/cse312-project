@@ -10,7 +10,7 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import coolguy from '../assets/coolguy.jpg';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { Navigate, useNavigate, useOutletContext } from 'react-router-dom';
 export default function Register() {
   return (
     <Flex justifyContent="space-evenly">
@@ -45,6 +45,8 @@ function RegisterForm() {
   function hasErrorMsg(value) {
     return msg !== '' && msg.toLowerCase().includes(value);
   }
+
+  
   return (
     <Flex direction={'column'} padding="20px" maxWidth="500px" flexGrow="1">
       <Flex flexGrow="1" direction="column" justifyContent="space-evenly">
