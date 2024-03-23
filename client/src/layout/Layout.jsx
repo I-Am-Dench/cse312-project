@@ -14,20 +14,22 @@ export default function Layout() {
   const [user, setUser] = useState(null);
 
   async function login(username, password) {
-    if (user) return;
+    if (user) return false;
     try {
       const response = await fetch('/auth/login', {
         method: 'POST',
         headers: { Authorization: 'Basic ' + btoa(`${username}:${password}`) },
       });
-      const json = await response.json();
 
       if (response.ok) {
+        const json = await response.json();
         setUser(json.username);
+        return true;
       }
     } catch (err) {
       console.error(err);
     }
+    return false;
   }
 
   async function logout() {
