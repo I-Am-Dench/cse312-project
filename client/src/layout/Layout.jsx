@@ -8,6 +8,7 @@ import {
   Text,
   Flex,
   Spacer,
+  Button,
 } from '@chakra-ui/react';
 
 export default function Layout() {
@@ -30,17 +31,6 @@ export default function Layout() {
       console.error(err);
     }
     return false;
-  }
-
-  async function logout() {
-    if (!user) return;
-    try {
-      const response = await fetch('/auth/logout', {
-        method: 'POST',
-      });
-    } catch (err) {
-      console.error(err);
-    }
   }
 
   async function register(username, email, password) {
@@ -70,13 +60,37 @@ export default function Layout() {
     }
     return [false, 'FAILED TO CONTACT SERVER...'];
   }
+  async function logout() {
+    if (!user) return;
+    try {
+      const response = await fetch('/auth/logout', {
+        method: 'POST',
+      });
+      if (response.ok) {
+        setUser(null);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
   const value = { login, logout, register, user };
   return (
     <div className="layout">
       <Flex margin="20px">
-        <Text fontSize="xl">Jesse Fan Club's web project</Text>
+        <Text alignSelf={'center'} fontSize="xl">
+          Jesse Fan Club's web project
+        </Text>
         <Spacer />
-        {user ? <PrivateNavigation /> : <PublicNavigation />}
+        {user ? (
+          <>
+            <PrivateNavigation />
+            <Button maxW="150px" margin={'20px'} onClick={logout}>
+              Logout
+            </Button>
+          </>
+        ) : (
+          <PublicNavigation />
+        )}
       </Flex>
       <main>
         <Outlet context={value} />
@@ -108,7 +122,7 @@ function PublicNavigation() {
 }
 function PrivateNavigation() {
   return (
-    <Breadcrumb>
+    <Breadcrumb alignSelf={'center'}>
       <BreadcrumbItem>
         <BreadcrumbLink as={NavLink} to="/">
           Home
