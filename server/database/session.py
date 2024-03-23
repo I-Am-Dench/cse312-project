@@ -27,13 +27,13 @@ def createSession(userID):
             "uid": userID,
         }
     )
-    return {"token": token, "expires": EXPIRES}
+    return {"token": token.decode("utf-8"), "expires": EXPIRES}
 
 def delete_session(token):
     sessionCollection.delete_one({'token': token})
 
 def validateSession(token):
-    decoded = jwt.decode(token.decode("utf-8"))
+    decoded = jwt.decode(token)
     uid = decoded.get("uid")
     collection = sessionCollection.find_one({"uid": uid})
     return bcrypt.checkpw(token, collection["token"])

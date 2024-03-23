@@ -20,8 +20,10 @@ export default function Layout() {
         method: 'POST',
         headers: { Authorization: 'Basic ' + btoa(`${username}:${password}`) },
       });
+      const json = await response.json();
 
       if (response.ok) {
+        setUser(json.username);
       }
     } catch (err) {
       console.error(err);

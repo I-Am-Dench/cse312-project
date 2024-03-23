@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, Response
 from http import client
+import json 
 
 from .database import accounts, session
 
@@ -35,7 +36,8 @@ def create_app(test_config=None):
         response = Response(status=client.OK)
         # set secure=True if we move over to HTTPS
         response.set_cookie('AUTH_TOKEN', sess['token'], expires=sess['expires'], httponly=True, samesite='Lax')
-
+        
+        response.set_data(json.dumps({'username': account['username']}))
         return response
 
     @app.route('/auth/logout', methods=['POST'])
