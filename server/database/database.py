@@ -1,9 +1,11 @@
 from pymongo import MongoClient
 
+
 mongo_client = MongoClient("mongo")
 db = mongo_client["projectDB"]
 all_boards = db["boards"]
 chats = db["chat"]
+users = db["user"]
 
 # functions related to boards
 
@@ -36,3 +38,10 @@ def retrieveBoards(boardID):
     else:
         boardHistory = list(all_boards.find({}, {"markedDeleted": True}))
     return boardHistory
+
+
+
+# Retrieves a user by username
+def getUserByUsername(username):
+    user = users.find_one({"username": username})
+    return user
