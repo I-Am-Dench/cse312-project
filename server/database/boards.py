@@ -1,4 +1,5 @@
 from . import db
+import random 
 
 all_boards = db["boards"]
 
@@ -7,11 +8,13 @@ all_boards = db["boards"]
 
 # creates a new board in the db
 def createBoard(title, creatorID):
+    boardID = random.randint(1, 1000000000)
     markedDeleted = False
     comments = []
     all_boards.insert_one(
         {
             "title": title,
+            "boardID": boardID
             "creatorID": creatorID,
             "comments": comments,
             "markedDeleted": markedDeleted,

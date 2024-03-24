@@ -72,6 +72,7 @@ export default function Layout() {
       console.error(err);
     }
   }
+  
   const value = { login, logout, register, user };
   return (
     <div className="layout">
