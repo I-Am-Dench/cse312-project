@@ -88,7 +88,7 @@ def create_app(test_config=None):
 
     @app.route('/api/users/<username>', methods=['GET'])
     def get_user(username):
-        user = database.getUserByUsername(username)
+        user = accounts.find_account(username)
         if user:
             return jsonify(user), 200
         else:

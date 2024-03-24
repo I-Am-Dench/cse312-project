@@ -42,6 +42,6 @@ def retrieveBoards(boardID):
 
 
 # Retrieves a user by username
-def getUserByUsername(username):
-    user = users.find_one({"username": username})
-    return user
+# def getUserByUsername(username):
+#     user = users.find_one({"username": username})
+#     return user
