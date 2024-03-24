@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, Response
 from http import client
 import json 
 
-from .database import accounts, session, comments
+from .database import accounts, session, comments, boards
 
 def create_app(test_config=None):
     app = Flask(__name__, static_folder='./static', static_url_path='/')
@@ -95,14 +95,13 @@ def create_app(test_config=None):
             return jsonify({"error": "User not found"}), 404
 
     @app.route('/api/boards', methods=['GET', 'POST'])
-    def boards():
+    def access_boards():
         if request.method == 'GET':
-            boards = database.retrieveBoards()
-            return jsonify(boards), 200
+            return jsonify(boards.retrieveBoards()), 200
         elif request.method == 'POST':
             title = request.json.get('title')
             creatorID = request.json.get('creatorID')  # Ensure this is sent in the request body
-            board_id = database.createBoard(title, creatorID)
+            board_id = boards.createBoard(title, creatorID)
             return jsonify({"id": board_id}), 201
 
     @app.route('/api/boards/<boardId>', methods=['GET', 'DELETE'])
