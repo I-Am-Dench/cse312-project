@@ -49,7 +49,6 @@ export default function Layout() {
       const json = await response.json();
       console.log(json.error);
       if (json.hasOwnProperty('username')) {
-        setUser(json.username);
         return [true, json.username];
       }
       if (json.hasOwnProperty('error')) {

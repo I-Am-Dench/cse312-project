@@ -18,16 +18,17 @@ def create_session_token(userID):
 
 def createSession(userID):
     token = create_session_token(userID)
-    expires = datetime.datetime.utcnow()
-
+    expires = datetime.datetime.now(datetime.UTC)
+    hashToken = bcrypt.hashpw(token, bcrypt.gensalt())
     bv = sessionCollection.insert_one(
         {
-            "token": bcrypt.hashpw(token, bcrypt.gensalt()),
-            "expiresIn": expires,
+            "token": hashToken,
+            "expiresIn": expires + datetime.timedelta(0, EXPIRES),
             "uid": userID,
         }
     )
-    return {"token": token.decode("utf-8"), "expires": EXPIRES}
+    res = sessionCollection.find_one({"token": hashToken})
+    return {"token": token.decode("utf-8"), "expires": res["expiresIn"]}
 
 def delete_session(token):
     sessionCollection.delete_one({'token': token})
