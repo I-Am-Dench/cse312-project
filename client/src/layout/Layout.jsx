@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 
 import {
@@ -73,6 +73,21 @@ export default function Layout() {
     }
   }
   const value = { login, logout, register, user };
+
+  useEffect(async () => {
+    try {
+      const response = await fetch('/auth/validate', {
+        method: 'POST',
+      });
+      if (response.ok) {
+        const json = await response.json();
+        setUser(json.username);
+      }
+    } catch (err) {
+      console.error(err);
+      setUser(null);
+    }
+  }, []);
   return (
     <div className="layout">
       <Flex margin="20px" justifyContent={'space-between'}>

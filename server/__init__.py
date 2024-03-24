@@ -1,6 +1,10 @@
 from flask import Flask, request, jsonify, Response
 from http import client
-import json 
+import json
+
+import jwt
+
+from server.auth import with_valid_session 
 
 from .database import accounts, session, comments, boards
 
@@ -16,6 +20,14 @@ def create_app(test_config=None):
     def send_index():
         return app.send_static_file('index.html')
 
+    @app.route('/auth/validate', methods=['POST'])
+    @with_valid_session
+    def auth_validate():
+        token = request.cookies.get('AUTH_TOKEN', default=None)
+        decoded = jwt.decode(token,"SECRET_KET", algorithms=["HS256"])
+        username = decoded.get("uid")
+        return jsonify({'username': username}), client.OK
+    
     @app.route('/auth/login', methods=['POST'])
     def auth_login():
         if request.authorization is None:
@@ -45,8 +57,9 @@ def create_app(test_config=None):
         token = request.cookies.get('AUTH_TOKEN', None)
         if token is not None:
             session.delete_session(token)
-        
-        return "", client.NO_CONTENT
+        response = Response(status=client.NO_CONTENT)
+        response.set_cookie('AUTH_TOKEN', '', expires=0, httponly=True, samesite='Lax')
+        return response
 
     @app.route('/api/users', methods=['POST'])
     def create_user():

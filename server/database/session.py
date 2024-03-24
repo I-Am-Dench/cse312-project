@@ -30,11 +30,32 @@ def createSession(userID):
     res = sessionCollection.find_one({"token": hashToken})
     return {"token": token.decode("utf-8"), "expires": res["expiresIn"]}
 
+
+def _get_sess_collection(token):
+    decoded = None
+    try:
+        decoded = jwt.decode(token, "SECRET_KET", algorithms=["HS256"])
+    except:
+        return None
+    uid = decoded.get("uid")
+    
+    return sessionCollection.find({"uid": uid})
 def delete_session(token):
-    sessionCollection.delete_one({'token': token})
+    collection =  _get_sess_collection(token)
+    if collection == None: 
+        return
+    
+    for item in collection:
+        if(bcrypt.checkpw(token.encode(), item["token"])):
+            sessionCollection.delete_one({'token': item["token"]})
+            return
 
 def validateSession(token):
-    decoded = jwt.decode(token)
-    uid = decoded.get("uid")
-    collection = sessionCollection.find_one({"uid": uid})
-    return bcrypt.checkpw(token, collection["token"])
+    collection =  _get_sess_collection(token)
+    if collection == None: 
+        return False
+    
+    for item in collection:
+        if(bcrypt.checkpw(token.encode(), item["token"])):
+            return True
+    return False
