@@ -1,10 +1,10 @@
 import { Button, Flex, Link, FormControl, FormLabel, Input, FormErrorMessage, Container, useDisclosure, FormHelperText} from '@chakra-ui/react';
-import { Form, Link as RouterLink, useOutletContext} from 'react-router-dom';
+import { Form, Link as RouterLink, useOutletContext, useNavigate} from 'react-router-dom';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton} from '@chakra-ui/react'
 import { useState } from 'react';
 
 function Home() {
-  const { createBoard, user } = useOutletContext();
+  const { user } = useOutletContext();
   const [title, setTitle] = useState('');
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [msg, setMsg] = useState('');
@@ -12,28 +12,26 @@ function Home() {
   function handleChangeValue(event, onSetValue) {
     onSetValue(event.target.value);
   }
-
   async function handleSubmit() {
-    if (title != ''){
-      const success = await createBoard(title);
-      if (success) {
+    try {
+      const response = await fetch('/api/boards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: title,
+          creatorID: user,
+        }),
+      });
+
+      if (response.ok) {
+        const json = await response.json();
         navigate('/');
       }
+    } catch (err) {
+      console.error(err);
     }
   }
-  async function handleSubmit() {
-    if (password === confirm && password !== '') {
-      const [success, message] = await register(username, email, password);
-      if (success) {
-        navigate('/');
-      } else {
-        setMsg(message);
-      }
-    } else {
-      setMsg('password');
-    }
-  }
-
+  
   return (
     <Flex direction={'column'} justifyContent="center" alignItems="center" height="60vh">
       <h1>Boards</h1>
@@ -57,7 +55,7 @@ function Home() {
             </Form>
           </ModalBody>
           <ModalFooter>
-            <Button type="submit">Submit</Button>
+            <Button type="submit" onClick={handleSubmit}>Submit</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

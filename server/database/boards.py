@@ -14,12 +14,13 @@ def createBoard(title, creatorID):
     all_boards.insert_one(
         {
             "title": title,
-            "boardID": boardID
+            "boardID": boardID,
             "creatorID": creatorID,
             "comments": comments,
             "markedDeleted": markedDeleted,
         }
     )
+    return boardID
 
 
 # deletes a board in the db
