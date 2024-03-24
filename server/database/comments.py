@@ -1,6 +1,9 @@
-from database import chats
+from . import db
+
 from datetime import datetime
 from bson import ObjectId
+
+chats = db['chats']
 
 def create_comment(board_id, creator_id, content):
     new_comment = {

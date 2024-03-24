@@ -4,7 +4,7 @@ from pymongo import MongoClient
 mongo_client = MongoClient("mongo")
 db = mongo_client["projectDB"]
 all_boards = db["boards"]
-chats = db["chat"]
+# chats = db["chat"]
 users = db["user"]
 
 # functions related to boards

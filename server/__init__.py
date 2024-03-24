@@ -2,8 +2,7 @@ from flask import Flask, request, jsonify, Response
 from http import client
 import json 
 
-from comment import create_comment, delete_comment
-from .database import accounts, session
+from .database import accounts, session, comments
 
 def create_app(test_config=None):
     app = Flask(__name__, static_folder='./static', static_url_path='/')
@@ -75,13 +74,13 @@ def create_app(test_config=None):
     def add_comment(board_id):
         user_id = request.json['user_id']
         content = request.json['content']
-        comment_id = create_comment(board_id, user_id, content)
+        comment_id = comments.create_comment(board_id, user_id, content)
         return jsonify({"comment_id": str(comment_id)}), 201
 
     @app.route('/api/boards/<board_id>/comments/<comment_id>', methods=['DELETE'])
     def remove_comment(board_id, comment_id):
         user_id = request.json['user_id']  # In a real app, the user ID should be retrieved from the session or token
-        success = delete_comment(comment_id, user_id)
+        success = comments.delete_comment(comment_id, user_id)
         if success:
             return jsonify({"success": True}), 204
         else:
