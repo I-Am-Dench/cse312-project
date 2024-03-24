@@ -3,7 +3,7 @@ import {
   createRoutesFromElements,
   Route,
   useOutletContext,
-  Navigate
+  Navigate,
 } from 'react-router-dom';
 import Home from './page/Home';
 import Register from './page/Register';

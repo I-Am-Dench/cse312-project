@@ -1,5 +1,6 @@
+import json
 from .database import session
-from flask import request, jsonify
+from flask import Response, request, jsonify
 from http import client
 
 from functools import wraps
@@ -24,12 +25,18 @@ def with_valid_session(func):
     @wraps(func)
     def _decorator(*args, **kwargs):
         token = request.cookies.get('AUTH_TOKEN', default=None)
+        
         if token is None:
             return jsonify({'error': "Must provide an authentication token"}), client.UNAUTHORIZED
         
         if not session.validateSession(token):
-            return jsonify({'error': "Invalid authentication token"}), client.UNAUTHORIZED
-
+            response = Response(status=client.UNAUTHORIZED)
+            # set secure=True if we move over to HTTPS
+            response.set_cookie('AUTH_TOKEN', '', expires=0, httponly=True, samesite='Lax')
+            response.set_data(json.dumps({'error': "Auth token was invalid"}))
+            return response
+        
+        
         return func(*args, **kwargs)
 
     return _decorator

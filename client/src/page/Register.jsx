@@ -46,7 +46,6 @@ function RegisterForm() {
     return msg !== '' && msg.toLowerCase().includes(value);
   }
 
-  
   return (
     <Flex direction={'column'} padding="20px" maxWidth="500px" flexGrow="1">
       <Flex flexGrow="1" direction="column" justifyContent="space-evenly">
