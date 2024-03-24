@@ -76,11 +76,19 @@ export default function Layout() {
   const value = { login, logout, register, user };
   return (
     <div className="layout">
-      <Flex margin="20px">
-        <Text alignSelf={'center'} fontSize="xl">
+      <Flex margin="20px" justifyContent={'space-between'}>
+        <Text alignSelf={'center'} width="17%" fontSize="xl">
           Jesse Fan Club's web project
         </Text>
-        <Spacer />
+        <Flex width="83%" justifyContent="center">
+          {user ? (
+            <Text alignSelf={'center'} fontSize="xl" justifyItems={'center'}>
+              {user}
+            </Text>
+          ) : (
+            <></>
+          )}
+        </Flex>
         {user ? (
           <>
             <PrivateNavigation />
