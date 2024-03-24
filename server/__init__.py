@@ -66,7 +66,8 @@ def create_app(test_config=None):
         data = request.get_json()
 
         username = data.get('username', None)
-
+        if username == '':
+            return jsonify({'error': "Invalid username"}), client.BAD_REQUEST
         email = data.get('email', None)
         if not accounts.is_valid_email(email):
             return jsonify({'error': "Invalid email"}), client.BAD_REQUEST
