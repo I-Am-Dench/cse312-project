@@ -31,7 +31,6 @@ def with_valid_session(func):
         
         if not session.validateSession(token):
             response = Response(status=client.UNAUTHORIZED)
-            # set secure=True if we move over to HTTPS
             response.set_cookie('AUTH_TOKEN', '', expires=0, httponly=True, samesite='Lax')
             response.set_data(json.dumps({'error': "Auth token was invalid"}))
             return response

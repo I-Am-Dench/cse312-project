@@ -57,8 +57,9 @@ def create_app(test_config=None):
         token = request.cookies.get('AUTH_TOKEN', None)
         if token is not None:
             session.delete_session(token)
-        
-        return "", client.NO_CONTENT
+        response = Response(status=client.NO_CONTENT)
+        response.set_cookie('AUTH_TOKEN', '', expires=0, httponly=True, samesite='Lax')
+        return response
 
     @app.route('/api/users', methods=['POST'])
     def create_user():
