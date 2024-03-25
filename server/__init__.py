@@ -122,16 +122,18 @@ def create_app(test_config=None):
     @app.route('/api/boards/<board_id>/comments', methods=['POST'])
     @with_valid_session
     def add_comment(board_id):
-        user_id = request.json['user_id']
+        # user_id = request.json['user_id']
+        username = get_session_username(request)
         content = request.json['content']
-        comment_id = comments.create_comment(board_id, user_id, content)
+        comment_id = comments.create_comment(board_id, username, content)
         return jsonify({"comment_id": str(comment_id)}), 201
 
     @app.route('/api/boards/<board_id>/comments/<comment_id>', methods=['DELETE'])
     @with_valid_session
     def remove_comment(board_id, comment_id):
-        user_id = request.json['user_id']  
-        success = comments.delete_comment(comment_id, user_id)
+        # user_id = request.json['user_id']  
+        username = get_session_username(request)
+        success = comments.delete_comment(comment_id, username)
         if success:
             return jsonify({"success": True}), 204
         else:
