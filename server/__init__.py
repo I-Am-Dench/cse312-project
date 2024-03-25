@@ -112,6 +112,7 @@ def create_app(test_config=None):
         return jsonify({'username': username}), client.CREATED
 
     @app.route('/api/boards/<board_id>/comments', methods=['POST'])
+    @with_valid_session
     def add_comment(board_id):
         user_id = request.json['user_id']
         content = request.json['content']
@@ -119,6 +120,7 @@ def create_app(test_config=None):
         return jsonify({"comment_id": str(comment_id)}), 201
 
     @app.route('/api/boards/<board_id>/comments/<comment_id>', methods=['DELETE'])
+    @with_valid_session
     def remove_comment(board_id, comment_id):
         user_id = request.json['user_id']  # In a real app, the user ID should be retrieved from the session or token
         success = comments.delete_comment(comment_id, user_id)
@@ -148,7 +150,7 @@ def create_app(test_config=None):
         
         return jsonify({"error": "Could not update account password"}), client.INTERNAL_SERVER_ERROR
 
-    @app.route('/api/boards', methods=['GET', 'POST'])
+    @app.route('/api/boards', methods=['GET'])
     def access_boards():
         if request.method == 'GET':
             return jsonify(boards.retrieveBoards()), 200
@@ -158,7 +160,19 @@ def create_app(test_config=None):
             board_id = boards.createBoard(title, creatorID)
             return jsonify({"id": board_id}), 201
 
+    @app.route('/api/boards', methods=['POST'])
+    @with_valid_session
+    def create_boards():
+        if request.method == 'GET':
+            return jsonify(boards.retrieveBoards()), 200
+        elif request.method == 'POST':
+            title = request.json.get('title')
+            creatorID = request.json.get('creatorID')  # Ensure this is sent in the request body
+            board_id = boards.createBoard(title, creatorID)
+            return jsonify({"id": board_id}), 201
+
     @app.route('/api/boards/<boardId>', methods=['GET', 'DELETE'])
+    @with_valid_session
     def board(boardId):
         if request.method == 'GET':
             board = database.retrieveBoards(boardId)
