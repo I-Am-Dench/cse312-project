@@ -125,7 +125,7 @@ def create_app(test_config=None):
     @app.route('/api/boards/<board_id>/comments/<comment_id>', methods=['DELETE'])
     @with_valid_session
     def remove_comment(board_id, comment_id):
-        user_id = request.json['user_id']  # In a real app, the user ID should be retrieved from the session or token
+        user_id = request.json['user_id']  
         success = comments.delete_comment(comment_id, user_id)
         if success:
             return jsonify({"success": True}), 204
@@ -142,14 +142,14 @@ def create_app(test_config=None):
 
     @app.route('/api/boards', methods=['GET'])
     def access_boards():
-        all_boards = boards.retrieveBoards()  # Adjust this method name as per your actual implementation
+        all_boards = boards.retrieveBoards()
         return jsonify(all_boards), 200
 
     @app.route('/api/boards', methods=['POST'])
     @with_valid_session
     def create_boards():
         title = request.json.get('title')
-        creatorID = request.json.get('creatorID')  # Ensure this is sent in the request body
+        creatorID = request.json.get('creatorID')
         board_id = boards.createBoard(title, creatorID)
         return jsonify({"id": board_id}), 201
 
