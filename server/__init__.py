@@ -107,7 +107,7 @@ def create_app(test_config=None):
     @app.route('/api/boards/<boardId>', methods=['GET', 'DELETE'])
     def board(boardId):
         if request.method == 'GET':
-            board = database.retrieveBoards(boardId)
+            board = boards.retrieveBoards(boardId)
             if board:
                 return jsonify(board), 200
             else:

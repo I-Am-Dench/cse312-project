@@ -9,6 +9,7 @@ import Home from './page/Home';
 import Register from './page/Register';
 import Login from './page/Login';
 import Layout from './layout/Layout';
+import Board from './page/Board'
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -29,6 +30,10 @@ const router = createHashRouter(
             <Login />
           </AuthRoute>
         }
+      ></Route>
+
+      <Route path="boards/:boardID"
+      element={<Board />}
       ></Route>
     </Route>
   )

@@ -16,8 +16,7 @@ def createBoard(title, creatorID):
             "title": title,
             "boardID": boardID,
             "creatorID": creatorID,
-            "comments": comments,
-            "markedDeleted": markedDeleted,
+            "comments": comments
         }
     )
     return boardID
@@ -32,8 +31,10 @@ def deleteBoard(boardID):
 # gets all message boards or a specific one if path ends in boardID
 def retrieveBoards(boardID):
     boardHistory = []
-    if boardID > 0:
-        boardHistory = list(all_boards.find({"_id": boardID}, {"markedDeleted": True}))
+    if int(boardID) > 0:
+        boardHistory = list(all_boards.find({"boardID": boardID}, {"_id": 0}))
+        if len(boardHistory) == 1:
+            return boardHistory[0]
     else:
-        boardHistory = list(all_boards.find({}, {"_id": 0, "markedDeleted": 0}))
+        boardHistory = list(all_boards.find({}, {"_id": 0}))
     return boardHistory
