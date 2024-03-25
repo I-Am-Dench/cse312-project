@@ -17,7 +17,7 @@ def createBoard(title, creatorID):
     all_boards.insert_one(
         {
             "id": boardId,
-            "title": escape(title),
+            "title": title,
             "boardID":  boardId,
             "creatorID": creatorID,
         }

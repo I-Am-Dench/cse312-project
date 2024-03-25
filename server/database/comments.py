@@ -13,7 +13,7 @@ def create_comment(board_id, creator_id, content):
         "id": comment_id,
         "BoardId": board_id,
         "CreatorId": creator_id,
-        "Content": escape(content),
+        "Content": content,
         "Time": datetime.now()
     }
     chats.insert_one(new_comment)
