@@ -1,5 +1,5 @@
 from . import db
-from .comments import get_comments
+from .comments import get_comments, delete_comments
 
 from secrets import token_urlsafe
 
@@ -30,6 +30,7 @@ def createBoard(title, creatorID):
 def deleteBoard(boardID):
     # query = {"_id": boardID}
     all_boards.delete_one({"boardID": boardID})
+    delete_comments(boardID)
 
 
 # gets all message boards or a specific one if path ends in boardID
