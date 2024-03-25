@@ -36,10 +36,6 @@ const router = createHashRouter(
         }
       ></Route>
 
-<<<<<<< HEAD
-      <Route path="boards/:boardID"
-      element={<Board />}
-=======
       <Route
         path="settings"
         element={
@@ -47,7 +43,11 @@ const router = createHashRouter(
             <Setting />
           </PrivateRoute>
         }
->>>>>>> dev
+      ></Route>
+
+      <Route
+        path="boards/:boardID"
+        element={<Board />}
       ></Route>
     </Route>
   )
