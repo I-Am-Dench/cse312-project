@@ -2,6 +2,7 @@ from . import db
 from .comments import get_comments, delete_comments
 
 from secrets import token_urlsafe
+from html import escape
 
 all_boards = db["boards"]
 
@@ -12,15 +13,13 @@ all_boards = db["boards"]
 def createBoard(title, creatorID):
     # boardID = random.randint(1, 1000000000)
     # markedDeleted = False
-    comments = []
     boardId = token_urlsafe()
     all_boards.insert_one(
         {
             "id": boardId,
-            "title": title,
+            "title": escape(title),
             "boardID":  boardId,
             "creatorID": creatorID,
-            "comments": comments
         }
     )
     return boardId
