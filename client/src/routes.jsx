@@ -9,11 +9,8 @@ import Home from './page/Home';
 import Register from './page/Register';
 import Login from './page/Login';
 import Layout from './layout/Layout';
-<<<<<<< HEAD
 import Board from './page/Board'
-=======
 import Setting from './page/Setting';
->>>>>>> dev
 
 const router = createHashRouter(
   createRoutesFromElements(
