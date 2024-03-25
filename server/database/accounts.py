@@ -73,3 +73,9 @@ def is_valid_password(password: str) -> bool:
             return False
         
     return True
+
+def is_valid_username(username: str) -> bool:
+    if len(username) == 0:
+        return False
+    
+    return not not re.match("[a-zA-Z0-9._-]+$", username)
