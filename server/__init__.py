@@ -80,6 +80,10 @@ def create_app(test_config=None):
         if not accounts.is_valid_password(password):
             return jsonify({'error': "Invalid password"}), client.BAD_REQUEST
         
+        confirm_password = data.get('confirmPassword', None)
+        if password != confirm_password:
+            return jsonify({'error': "Passwords do not match"}), client.BAD_REQUEST
+        
         if accounts.find_account_by_email(email) is not None:
             return jsonify({'error': "Email is already in use"}), client.CONFLICT
 
@@ -120,6 +124,13 @@ def create_app(test_config=None):
             return jsonify({"error": "You do not have permission to complete this action"}), client.FORBIDDEN
         
         password = request.json.get('password')
+        if not accounts.is_valid_password(password):
+            return jsonify({'error': "Invalid password"}), client.BAD_REQUEST
+        
+        confirm_password = request.json.get('confirmPassword')
+        if password != confirm_password:
+            return jsonify({'error': "Passwords do not match"}), client.BAD_REQUEST
+
         if accounts.update_account_password(account.get('email'), password):
             return "", client.NO_CONTENT
         
