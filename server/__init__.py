@@ -154,8 +154,9 @@ def create_app(test_config=None):
     @with_valid_session
     def create_boards():
         title = request.json.get('title')
-        creatorID = request.json.get('creatorID')
-        board_id = boards.createBoard(title, creatorID)
+        username = get_session_username(request)
+        # creatorID = request.json.get('creatorID')
+        board_id = boards.createBoard(title, username)
         return jsonify({"id": board_id}), 201
 
     @app.route('/api/boards/<boardId>', methods=['GET'])
