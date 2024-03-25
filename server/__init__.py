@@ -172,10 +172,17 @@ def create_app(test_config=None):
     @app.route('/api/boards/<boardId>', methods=['DELETE'])
     @with_valid_session
     def delete_board(boardId):
+        board = boards.retrieveBoard(boardId)
+        if board is None:
+            return jsonify({"error": f"Not board with ID: {boardId}"}), client.NOT_FOUND
+        
+        if board.get('creatorID', '') != get_session_username(request):
+            return jsonify({"error": "You do not have permission to delete this board"}), client.FORBIDDEN
+
         success = boards.deleteBoard(boardId)  # Adjust this to match your actual deletion method
         if success:
-            return jsonify({"success": "Board successfully deleted"}), 200
+            return jsonify({"success": "Board successfully deleted"}), client.OK
         else:
-            return jsonify({"error": "Failed to delete board or board not found"}), 404
+            return jsonify({"error": "Failed to delete board or board not found"}), client.NOT_FOUND
 
     return app
