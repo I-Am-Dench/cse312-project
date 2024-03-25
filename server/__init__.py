@@ -169,7 +169,7 @@ def create_app(test_config=None):
     @app.route('/api/boards/<boardId>', methods=['DELETE'])
     @with_valid_session
     def delete_board(boardId):
-        success = database.deleteBoard(boardId)  # Adjust this to match your actual deletion method
+        success = boards.deleteBoard(boardId)  # Adjust this to match your actual deletion method
         if success:
             return jsonify({"success": "Board successfully deleted"}), 200
         else:
