@@ -61,7 +61,7 @@ def create_app(test_config=None):
         response.set_cookie('AUTH_TOKEN', '', expires=0, httponly=True, samesite='Lax')
         return response
     
-    @app.route('/api/update-password', methods=['POST'])
+    @app.route('/api/update-password', methods=['PUT'])
     @with_valid_session
     def update_password():
         token = request.cookies.get('AUTH_TOKEN', default=None)

@@ -23,7 +23,7 @@ export default function Setting() {
   async function handleSubmit() {
     try {
       const response = await fetch('/api/update-password', {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           oldPassword: oldPassword,
