@@ -1,6 +1,6 @@
 import { Button, Flex, Link, FormControl, FormLabel, Input, FormErrorMessage, Container, Box, IconButton } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
-import {Link as RouterLink, useOutletContext, Form, useParams } from 'react-router-dom';
+import {Link as RouterLink, useOutletContext, Form, useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect} from 'react';
 
 function Board() {
@@ -10,6 +10,7 @@ function Board() {
   const [comments, setComments] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const navigate = useNavigate();
 
   function handleChangeValue(event, onSetValue) {
     onSetValue(event.target.value);
@@ -30,8 +31,9 @@ function Board() {
       });
 
       if (response.ok) {
-        const json = await response.json();
+        // const json = await response.json();
         navigate('/');
+        // window.location.href = "/"
       } else {
         const json = await response.json()
         if(json.auth_error) {
@@ -96,7 +98,8 @@ function Board() {
 
       if (response.ok) {
         const json = await response.json();
-        navigate('/');
+        // navigate('/');
+        window.location.reload();
       } else {
         const json = await response.json()
         if(json.auth_error) {

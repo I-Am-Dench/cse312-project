@@ -45,7 +45,8 @@ function Home() {
 
       if (response.ok) {
         const json = await response.json();
-        navigate('/');
+        // navigate('/');
+        window.location.reload();
       } else {
         const json = await response.json()
         if(json.auth_error) {

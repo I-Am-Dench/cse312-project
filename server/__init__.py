@@ -176,13 +176,14 @@ def create_app(test_config=None):
         if board is None:
             return jsonify({"error": f"Not board with ID: {boardId}"}), client.NOT_FOUND
         
-        if board.get('creatorID', '') != get_session_username(request):
+        if board.get('board', {}).get('creatorID', '') != get_session_username(request):
             return jsonify({"error": "You do not have permission to delete this board"}), client.FORBIDDEN
 
-        success = boards.deleteBoard(boardId)  # Adjust this to match your actual deletion method
-        if success:
-            return jsonify({"success": "Board successfully deleted"}), client.OK
-        else:
-            return jsonify({"error": "Failed to delete board or board not found"}), client.NOT_FOUND
+        boards.deleteBoard(boardId)  # Adjust this to match your actual deletion method
+        return "", client.NO_CONTENT
+        # if success:
+        #     return jsonify({"success": "Board successfully deleted"}), client.OK
+        # else:
+        #     return jsonify({"error": "Failed to delete board or board not found"}), client.NOT_FOUND
 
     return app
