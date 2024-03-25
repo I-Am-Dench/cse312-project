@@ -35,5 +35,5 @@ def retrieveBoards(boardID):
     if boardID > 0:
         boardHistory = list(all_boards.find({"_id": boardID}, {"markedDeleted": True}))
     else:
-        boardHistory = list(all_boards.find({}, {"markedDeleted": True}))
+        boardHistory = list(all_boards.find({}, {"_id": 0, "markedDeleted": 0}))
     return boardHistory

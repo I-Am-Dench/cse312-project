@@ -1,17 +1,37 @@
 import { Button, Flex, Link, FormControl, FormLabel, Input, FormErrorMessage, Container, useDisclosure, FormHelperText} from '@chakra-ui/react';
 import { Form, Link as RouterLink, useOutletContext, useNavigate} from 'react-router-dom';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton} from '@chakra-ui/react'
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 
 function Home() {
   const { user } = useOutletContext();
+  const [boards, setBoards] = useState([]);
   const [title, setTitle] = useState('');
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const [msg, setMsg] = useState('');
   const navigate = useNavigate();
+
   function handleChangeValue(event, onSetValue) {
     onSetValue(event.target.value);
   }
+
+  useEffect(() => {
+    pullBoards();
+  }, []);
+
+  async function pullBoards(){
+    try {
+      const response = await fetch('/api/boards', {
+        method: 'GET',
+    });
+    if(response.ok){
+      const json = await response.json();
+      setBoards(jsonData);
+    }
+  } catch (error) {
+    console.error('Error fetching boards:', error)
+    }
+  }
+  
   async function handleSubmit() {
     try {
       const response = await fetch('/api/boards', {
@@ -36,7 +56,9 @@ function Home() {
     <Flex direction={'column'} justifyContent="center" alignItems="center" height="60vh">
       <h1>Boards</h1>
       <Container>
-        <Link as={RouterLink} to="/">Text</Link>
+        {boards.map(board => (
+          <Link key={board.id} as={RouterLink} to={`/${board.id}`}>{board.title}</Link>
+        ))}
       </Container>
       <Button maxW="150px" alignSelf="center" margin={'20px'} onClick={onOpen}>create board</Button>
       <Modal isOpen={isOpen} onClose={onClose}>

@@ -97,7 +97,7 @@ def create_app(test_config=None):
     @app.route('/api/boards', methods=['GET', 'POST'])
     def access_boards():
         if request.method == 'GET':
-            return jsonify(boards.retrieveBoards()), 200
+            return jsonify(boards.retrieveBoards(0)), 200
         elif request.method == 'POST':
             title = request.json.get('title')
             creatorID = request.json.get('creatorID')  # Ensure this is sent in the request body
