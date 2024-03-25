@@ -32,7 +32,12 @@ function RegisterForm() {
   }
   async function handleSubmit() {
     if (password === confirm) {
-      const [success, message] = await register(username, email, password);
+      const [success, message] = await register(
+        username,
+        email,
+        password,
+        confirm
+      );
       if (success) {
         navigate('/');
       } else {

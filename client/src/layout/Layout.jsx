@@ -33,7 +33,7 @@ export default function Layout() {
     return false;
   }
 
-  async function register(username, email, password) {
+  async function register(username, email, password, confirmPassword) {
     if (user) return [false, 'already logged in'];
     try {
       const response = await fetch('/api/users', {
@@ -43,6 +43,7 @@ export default function Layout() {
           username: username,
           email: email,
           password: password,
+          confirmPassword: confirmPassword,
         }),
       });
 
