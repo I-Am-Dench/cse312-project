@@ -136,19 +136,6 @@ def create_app(test_config=None):
             return jsonify(user), 200
         else:
             return jsonify({"error": "User not found"}), 404
-        
-    @app.route('/api/users/<username>/password', method=['PUT'])
-    @auth.with_valid_session
-    def update_password(username):
-        account = accounts.find_account(username)
-        if account.get('username') != get_session_username(request):
-            return jsonify({"error": "You do not have permission to complete this action"}), client.FORBIDDEN
-        
-        password = request.json.get('password')
-        if accounts.update_account_password(account.get('email'), password):
-            return "", client.NO_CONTENT
-        
-        return jsonify({"error": "Could not update account password"}), client.INTERNAL_SERVER_ERROR
 
     @app.route('/api/boards', methods=['GET'])
     def access_boards():
@@ -164,19 +151,6 @@ def create_app(test_config=None):
         creatorID = request.json.get('creatorID')  # Ensure this is sent in the request body
         board_id = boards.createBoard(title, creatorID)
         return jsonify({"id": board_id}), 201
-
-    # @app.route('/api/boards/<boardId>', methods=['GET', 'DELETE'])
-    # @with_valid_session
-    # def board(boardId):
-    #     if request.method == 'GET':
-    #         board = database.retrieveBoards(boardId)
-    #         if board:
-    #             return jsonify(board), 200
-    #         else:
-    #             return jsonify({"error": "Board not found"}), 404
-    #     elif request.method == 'DELETE':
-    #         database.deleteBoard(boardId)
-    #         return jsonify({"success": "Board marked as deleted"}), 200
 
     @app.route('/api/boards/<boardId>', methods=['GET'])
     def get_board(boardId):
