@@ -7,16 +7,41 @@ import {
   Input,
   FormErrorMessage,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Setting() {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMsg, setError] = useState('');
 
+  const navigate = useNavigate();
   function handleInput(event, onSetInput) {
     onSetInput(event.target.value);
   }
 
+  async function handleSubmit() {
+    try {
+      const response = await fetch('/api/update-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          oldPassword: oldPassword,
+          newPassword: newPassword,
+          confirmPassword: confirmPassword,
+        }),
+      });
+
+      if (response.ok) {
+        navigate('/');
+      } else {
+        const json = await response.json();
+        setError(json.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
   return (
     <Flex
       direction={'column'}
@@ -25,7 +50,10 @@ export default function Setting() {
       height="60vh"
     >
       <Flex direction="column" justifyContent="space-evenly" width="350px">
-        <FormControl>
+        <FormControl isInvalid={errorMsg}>
+          <FormErrorMessage>{errorMsg}</FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={errorMsg}>
           <FormLabel>Old Password</FormLabel>
           <Input
             type="password"
@@ -34,7 +62,7 @@ export default function Setting() {
             }}
           />
         </FormControl>
-        <FormControl>
+        <FormControl isInvalid={errorMsg}>
           <FormLabel>New Password</FormLabel>
           <Input
             type="password"
@@ -44,7 +72,7 @@ export default function Setting() {
           />
         </FormControl>
 
-        <FormControl>
+        <FormControl isInvalid={errorMsg}>
           <FormLabel>Confirm Password</FormLabel>
           <Input
             type="password"
@@ -55,8 +83,13 @@ export default function Setting() {
         </FormControl>
       </Flex>
 
-      <Button maxW="150px" alignSelf="center" margin={'20px'}>
-        Login
+      <Button
+        maxW="150px"
+        alignSelf="center"
+        margin={'20px'}
+        onClick={handleSubmit}
+      >
+        Change Password
       </Button>
     </Flex>
   );
