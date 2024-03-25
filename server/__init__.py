@@ -117,6 +117,7 @@ def create_app(test_config=None):
         return jsonify({'username': username}), client.CREATED
 
     @app.route('/api/boards/<board_id>/comments', methods=['POST'])
+    @with_valid_session
     def add_comment(board_id):
         user_id = request.json['user_id']
         content = request.json['content']
@@ -124,6 +125,7 @@ def create_app(test_config=None):
         return jsonify({"comment_id": str(comment_id)}), 201
 
     @app.route('/api/boards/<board_id>/comments/<comment_id>', methods=['DELETE'])
+    @with_valid_session
     def remove_comment(board_id, comment_id):
         user_id = request.json['user_id']  # In a real app, the user ID should be retrieved from the session or token
         success = comments.delete_comment(comment_id, user_id)
@@ -140,26 +142,36 @@ def create_app(test_config=None):
         else:
             return jsonify({"error": "User not found"}), 404
 
-    @app.route('/api/boards', methods=['GET', 'POST'])
+    @app.route('/api/boards', methods=['GET'])
     def access_boards():
-        if request.method == 'GET':
-            return jsonify(boards.retrieveBoards()), 200
-        elif request.method == 'POST':
-            title = request.json.get('title')
-            creatorID = request.json.get('creatorID')  # Ensure this is sent in the request body
-            board_id = boards.createBoard(title, creatorID)
-            return jsonify({"id": board_id}), 201
+        title = request.json.get('title')
+        creatorID = request.json.get('creatorID')  # Ensure this is sent in the request body
+        board_id = boards.createBoard(title, creatorID)
+        return jsonify({"id": board_id}), 201
 
-    @app.route('/api/boards/<boardId>', methods=['GET', 'DELETE'])
-    def board(boardId):
-        if request.method == 'GET':
-            board = database.retrieveBoards(boardId)
-            if board:
-                return jsonify(board), 200
-            else:
-                return jsonify({"error": "Board not found"}), 404
-        elif request.method == 'DELETE':
-            database.deleteBoard(boardId)
-            return jsonify({"success": "Board marked as deleted"}), 200
-    
+    @app.route('/api/boards', methods=['POST'])
+    @with_valid_session
+    def create_boards():
+        title = request.json.get('title')
+        creatorID = request.json.get('creatorID')  # Ensure this is sent in the request body
+        board_id = boards.createBoard(title, creatorID)
+        return jsonify({"id": board_id}), 201
+
+    @app.route('/api/boards/<boardId>', methods=['GET'])
+    def get_board(boardId):
+        board = boards.retrieveBoard(boardId)
+        if board:
+            return jsonify(board), 200
+        else:
+            return jsonify({"error": "Board not found"}), 404
+
+    @app.route('/api/boards/<boardId>', methods=['DELETE'])
+    @with_valid_session
+    def delete_board(boardId):
+        success = database.deleteBoard(boardId)  # Adjust this to match your actual deletion method
+        if success:
+            return jsonify({"success": "Board successfully deleted"}), 200
+        else:
+            return jsonify({"error": "Failed to delete board or board not found"}), 404
+
     return app
