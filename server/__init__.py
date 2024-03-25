@@ -95,6 +95,7 @@ def create_app(test_config=None):
         username = data.get('username', None)
         if username == '':
             return jsonify({'error': "Invalid username"}), client.BAD_REQUEST
+        
         email = data.get('email', None)
         if not accounts.is_valid_email(email):
             return jsonify({'error': "Invalid email"}), client.BAD_REQUEST
@@ -138,26 +139,6 @@ def create_app(test_config=None):
             return jsonify(user), 200
         else:
             return jsonify({"error": "User not found"}), 404
-        
-    @app.route('/api/users/<username>/password', method=['PUT'])
-    @auth.with_valid_session
-    def update_password(username):
-        account = accounts.find_account(username)
-        if account.get('username') != get_session_username(request):
-            return jsonify({"error": "You do not have permission to complete this action"}), client.FORBIDDEN
-        
-        password = request.json.get('password')
-        if not accounts.is_valid_password(password):
-            return jsonify({'error': "Invalid password"}), client.BAD_REQUEST
-        
-        confirm_password = request.json.get('confirmPassword')
-        if password != confirm_password:
-            return jsonify({'error': "Passwords do not match"}), client.BAD_REQUEST
-
-        if accounts.update_account_password(account.get('email'), password):
-            return "", client.NO_CONTENT
-        
-        return jsonify({"error": "Could not update account password"}), client.INTERNAL_SERVER_ERROR
 
     @app.route('/api/boards', methods=['GET', 'POST'])
     def access_boards():
