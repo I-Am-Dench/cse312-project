@@ -3,6 +3,7 @@ from . import db
 from datetime import datetime
 from bson import ObjectId
 from secrets import token_urlsafe
+from html import escape
 
 chats = db['chats']
 
@@ -12,7 +13,7 @@ def create_comment(board_id, creator_id, content):
         "id": comment_id,
         "BoardId": board_id,
         "CreatorId": creator_id,
-        "Content": content,
+        "Content": escape(content),
         "Time": datetime.now()
     }
     chats.insert_one(new_comment)
