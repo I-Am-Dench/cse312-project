@@ -3,13 +3,17 @@ import {
   createRoutesFromElements,
   Route,
   useOutletContext,
-  Navigate
+  Navigate,
 } from 'react-router-dom';
 import Home from './page/Home';
 import Register from './page/Register';
 import Login from './page/Login';
 import Layout from './layout/Layout';
+<<<<<<< HEAD
 import Board from './page/Board'
+=======
+import Setting from './page/Setting';
+>>>>>>> dev
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -32,8 +36,18 @@ const router = createHashRouter(
         }
       ></Route>
 
+<<<<<<< HEAD
       <Route path="boards/:boardID"
       element={<Board />}
+=======
+      <Route
+        path="settings"
+        element={
+          <PrivateRoute>
+            <Setting />
+          </PrivateRoute>
+        }
+>>>>>>> dev
       ></Route>
     </Route>
   )
@@ -43,5 +57,11 @@ function AuthRoute({ children }) {
   const { user } = useOutletContext();
 
   return user ? <Navigate to="/" /> : children;
+}
+
+function PrivateRoute({ children }) {
+  const { user } = useOutletContext();
+
+  return !user ? <Navigate to="/" /> : children;
 }
 export default router;
