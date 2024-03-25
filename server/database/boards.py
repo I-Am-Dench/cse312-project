@@ -48,5 +48,8 @@ def retrieveBoard(boardID):
     if board is None:
         return None
     
-    board["comments"] = get_comments(boardID)
-    return board
+    # board["comments"] = get_comments(boardID)
+    return {
+        "board": board,
+        "comments": get_comments(boardID)
+    }
