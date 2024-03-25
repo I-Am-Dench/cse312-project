@@ -26,5 +26,8 @@ def delete_comment(comment_id, user_id):
     else:
         return False
     
+def delete_comments(board_id):
+    chats.delete_many({"BoardId": board_id})
+    
 def get_comments(board_id):
     return list(chats.find({"BoardId": board_id}, {"_id": False}))
