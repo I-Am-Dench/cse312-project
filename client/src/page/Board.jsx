@@ -93,22 +93,14 @@ function Board() {
         </>
       )}
         <Container>
-        {comments.map(comment => (
-          <Box key={comment.id} p={4} mb={4} border="1px solid #ccc" borderRadius="md">
+  
+          {comments.map(comment => (
+            <Box key={comment.id} p={4} mb={4} border="1px solid #ccc" borderRadius="md">
             <p>{comment.content}</p>
-            {/* Delete button */}
-            <IconButton
-              aria-label="Delete comment"
-              icon={<DeleteIcon />}
-              onClick={() => handleDelete(comment.id)}
-              variant="ghost"
-              colorScheme="red"
-              size="sm"
-              mt={2}
-            />
-            <p>Creator: {comment.creatorID}</p>
-          </Box>
-        ))}
+            
+            <p>Creator: {comment.creator}</p> 
+            </Box>
+          ))}
         </Container>
         <Form>
           <FormControl>

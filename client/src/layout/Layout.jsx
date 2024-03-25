@@ -27,10 +27,6 @@ export default function Layout() {
       console.error(err);
     }
   }
-<<<<<<< HEAD
-  
-  const value = { login, logout, register, user };
-=======
 
   async function validate() {
     try {
@@ -51,7 +47,6 @@ export default function Layout() {
   useEffect(() => {
     validate().then();
   }, []);
->>>>>>> dev
   return (
     <div className="layout">
       <Flex margin="20px" justifyContent={'space-between'}>
