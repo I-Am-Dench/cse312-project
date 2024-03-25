@@ -26,7 +26,7 @@ def create_app(test_config=None):
         return app.send_static_file('index.html')
 
     @app.route('/auth/validate', methods=['POST'])
-    @auth.with_valid_session
+    @with_valid_session
     def auth_validate():
         token = request.cookies.get('AUTH_TOKEN', default=None)
         decoded = jwt.decode(token,"SECRET_KET", algorithms=["HS256"])
