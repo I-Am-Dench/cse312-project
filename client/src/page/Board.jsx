@@ -19,6 +19,30 @@ function Board() {
     pullComments();
   }, []);
 
+  async function deleteBoard() {
+    try {
+      const response = await fetch(`/api/boards/${boardID}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          board_id: boardID,
+        }),
+      });
+
+      if (response.ok) {
+        const json = await response.json();
+        navigate('/');
+      } else {
+        const json = await response.json()
+        if(json.auth_error) {
+          setUser(null)
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   async function deleteComment() {
     try {
       const response = await fetch(`/api/boards/${boardID}/comments/${commentID}`, {
@@ -86,6 +110,7 @@ function Board() {
 
     return (
       <Flex direction={'column'} justifyContent="center" alignItems="center" height="60vh">
+        <Button maxW="150px" alignSelf="center" type="submit" margin={'20px'} onClick={deleteBoard}>Delete Board</Button>
         {board && (
         <>
           <h1>{board.title}</h1>
@@ -96,9 +121,9 @@ function Board() {
   
           {comments.map(comment => (
             <Box key={comment.id} p={4} mb={4} border="1px solid #ccc" borderRadius="md">
-            <p>{comment.content}</p>
+            <p>{comment.Content}</p>
             
-            <p>Creator: {comment.creator}</p> 
+            <p>Creator: {comment.CreatorId}</p> 
             </Box>
           ))}
         </Container>
