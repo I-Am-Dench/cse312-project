@@ -27,4 +27,4 @@ def delete_comment(comment_id, user_id):
         return False
     
 def get_comments(board_id):
-    return list(chats.find({"BoardId": board_id}))
+    return list(chats.find({"BoardId": board_id}, {"_id": False}))
