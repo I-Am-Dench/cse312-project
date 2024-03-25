@@ -20,7 +20,7 @@ export default function Register() {
   );
 }
 function RegisterForm() {
-  const { register } = useOutletContext();
+  const { user } = useOutletContext();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -49,6 +49,34 @@ function RegisterForm() {
   }
   function hasErrorMsg(value) {
     return msg !== '' && msg.toLowerCase().includes(value);
+  }
+
+  async function register(username, email, password, confirmPassword) {
+    if (user) return [false, 'already logged in'];
+    try {
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: username,
+          email: email,
+          password: password,
+          confirmPassword: confirmPassword,
+        }),
+      });
+
+      const json = await response.json();
+      console.log(json.error);
+      if (json.hasOwnProperty('username')) {
+        return [true, json.username];
+      }
+      if (json.hasOwnProperty('error')) {
+        return [false, json.error];
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    return [false, 'FAILED TO CONTACT SERVER...'];
   }
 
   return (

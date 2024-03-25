@@ -10,12 +10,31 @@ import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 export default function Login() {
-  const { login } = useOutletContext();
+  const { user, setUser } = useOutletContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isValid, setValid] = useState(true);
   function handleInput(event, onSetInput) {
     onSetInput(event.target.value);
+  }
+
+  async function login(username, password) {
+    if (user) return false;
+    try {
+      const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { Authorization: 'Basic ' + btoa(`${username}:${password}`) },
+      });
+
+      if (response.ok) {
+        const json = await response.json();
+        setUser(json.username);
+        return true;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    return false;
   }
 
   async function handleLogin() {
