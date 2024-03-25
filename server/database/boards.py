@@ -29,12 +29,13 @@ def createBoard(title, creatorID):
 # deletes a board in the db
 def deleteBoard(boardID):
     # query = {"_id": boardID}
-    all_boards.update_one({"id": boardID})
+    all_boards.delete_one({"boardID": boardID})
 
 
 # gets all message boards or a specific one if path ends in boardID
 def retrieveBoards():
-    return all_boards.find({"markedDeleted": False}, projection={"_id": False})
+    boardHistory = list(all_boards.find({}, {"_id": 0}))
+    return boardHistory
 # def retrieveBoards(boardID):
 #     boardHistory = []
 #     if boardID > 0:
@@ -44,7 +45,10 @@ def retrieveBoards():
 #     return boardHistory
 
 def retrieveBoard(boardID):
-    board = all_boards.find_one({"id": boardID}, {"_id": False})
+    boardHistory = list(all_boards.find({"boardID": boardID}, {"_id": 0}))
+    print(boardHistory)
+    board = boardHistory[0]
+
     if board is None:
         return None
     
