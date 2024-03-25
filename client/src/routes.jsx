@@ -9,6 +9,7 @@ import Home from './page/Home';
 import Register from './page/Register';
 import Login from './page/Login';
 import Layout from './layout/Layout';
+import Setting from './page/Setting';
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -30,6 +31,15 @@ const router = createHashRouter(
           </AuthRoute>
         }
       ></Route>
+
+      <Route
+        path="settings"
+        element={
+          <PrivateRoute>
+            <Setting />
+          </PrivateRoute>
+        }
+      ></Route>
     </Route>
   )
 );
@@ -38,5 +48,11 @@ function AuthRoute({ children }) {
   const { user } = useOutletContext();
 
   return user ? <Navigate to="/" /> : children;
+}
+
+function PrivateRoute({ children }) {
+  const { user } = useOutletContext();
+
+  return !user ? <Navigate to="/" /> : children;
 }
 export default router;

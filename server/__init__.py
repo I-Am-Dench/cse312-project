@@ -65,13 +65,36 @@ def create_app(test_config=None):
         response = Response(status=client.NO_CONTENT)
         response.set_cookie('AUTH_TOKEN', '', expires=0, httponly=True, samesite='Lax')
         return response
-
+    
+    @app.route('/api/update-password', methods=['PUT'])
+    @with_valid_session
+    def update_password():
+        token = request.cookies.get('AUTH_TOKEN', default=None)
+        decoded = jwt.decode(token,"SECRET_KET", algorithms=["HS256"])
+        username = decoded.get("uid")
+        
+        account = accounts.find_account(username)
+        
+        email = account['email']
+        account = accounts.check_credentials(email, request.json["oldPassword"])
+        
+        if account is None:
+            return jsonify({'error': "Invalid password"}), client.NOT_FOUND
+        
+        if request.json["newPassword"] != request.json["confirmPassword"]:
+            return jsonify({'error': "passwords do not match"}), client.NOT_FOUND
+        
+        accounts.update_account_password(email, request.json["newPassword"])
+        
+        return jsonify({'success': "password was changed"}),client.ACCEPTED
+        
     @app.route('/api/users', methods=['POST'])
     def create_user():
         data = request.get_json()
 
         username = data.get('username', None)
-
+        if username == '':
+            return jsonify({'error': "Invalid username"}), client.BAD_REQUEST
         email = data.get('email', None)
         if not accounts.is_valid_email(email):
             return jsonify({'error': "Invalid email"}), client.BAD_REQUEST

@@ -72,9 +72,8 @@ export default function Layout() {
       console.error(err);
     }
   }
-  const value = { login, logout, register, user };
 
-  useEffect(async () => {
+  async function validate() {
     try {
       const response = await fetch('/auth/validate', {
         method: 'POST',
@@ -87,6 +86,11 @@ export default function Layout() {
       console.error(err);
       setUser(null);
     }
+  }
+  const value = { login, logout, register, user };
+
+  useEffect(() => {
+    validate().then();
   }, []);
   return (
     <div className="layout">
