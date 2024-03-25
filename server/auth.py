@@ -27,12 +27,12 @@ def with_valid_session(func):
         token = request.cookies.get('AUTH_TOKEN', default=None)
         
         if token is None:
-            return jsonify({'error': "Must provide an authentication token"}), client.UNAUTHORIZED
+            return jsonify({'auth_error': "Must provide an authentication token"}), client.UNAUTHORIZED
         
         if not session.validateSession(token):
             response = Response(status=client.UNAUTHORIZED)
             response.set_cookie('AUTH_TOKEN', '', expires=0, httponly=True, samesite='Lax')
-            response.set_data(json.dumps({'error': "Auth token was invalid"}))
+            response.set_data(json.dumps({'auth_error': "Auth token was invalid"}))
             return response
         
         
