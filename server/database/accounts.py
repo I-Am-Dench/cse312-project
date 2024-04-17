@@ -20,6 +20,7 @@ def create_account(email: str, username: str, password: str) -> bool:
         'email': email,
         'username': username,
         'password': hashed,
+        'picture': '',
     })
     
     return True
@@ -79,3 +80,9 @@ def is_valid_username(username: str) -> bool:
         return False
     
     return not not re.match("[a-zA-Z0-9._-]+$", username)
+
+def update_picture(username: str, picturePath: str) -> bool:
+    query = {"username": username}
+    update = { "$set": { "picture": picturePath} }
+    result = _accounts.update_one(query, update)
+    return result.modified_count > 0

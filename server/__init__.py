@@ -118,6 +118,18 @@ def create_app(test_config=None):
             return jsonify({'error': "Username is already in use"}), client.CONFLICT
 
         return jsonify({'username': username}), client.CREATED
+    
+    @app.route('/api/users/<username>/profile', methods=['POST'])
+    @with_valid_session
+    def add_profilePicture():
+        # add functionality to update profile picture section in database
+        data = request.get_json()
+        username = data.get('username', None)
+        result = accounts.update_picture(username)
+        if result:
+            return jsonify({'error': "Something went wrong"}), client.CONFLICT
+        else:
+            return jsonify({"success": True}), 201
 
     @app.route('/api/boards/<board_id>/comments', methods=['POST'])
     @with_valid_session
@@ -127,6 +139,12 @@ def create_app(test_config=None):
         content = request.json['content']
         comment_id = comments.create_comment(board_id, username, content)
         return jsonify({"comment_id": str(comment_id)}), 201
+    
+    @app.route('/api/boards/<board_id>/media', methods = ['POST'])
+    def add_media(board_id):
+        username = get_session_username(request)
+        content = request.json['content']
+        # add further functionality for media uploads
 
     @app.route('/api/boards/<board_id>/comments/<comment_id>', methods=['DELETE'])
     @with_valid_session
