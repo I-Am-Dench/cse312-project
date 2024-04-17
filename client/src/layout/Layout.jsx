@@ -9,10 +9,12 @@ import {
   Flex,
   Spacer,
   Button,
+  Avatar,
 } from '@chakra-ui/react';
 
 export default function Layout() {
   const [user, setUser] = useState(null);
+  const [avatar, setAvatar] = useState('');
 
   async function logout() {
     if (!user) return;
@@ -65,6 +67,13 @@ export default function Layout() {
         {user ? (
           <>
             <PrivateNavigation />
+            <Avatar
+              src={avatar}
+              size={'xs'}
+              ml={'10px'}
+              mr={'10px'}
+              alignSelf={'center'}
+            />
             <Button maxW="150px" margin={'20px'} onClick={logout}>
               Logout
             </Button>

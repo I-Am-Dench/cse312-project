@@ -91,6 +91,20 @@ export default function Setting() {
       >
         Change Password
       </Button>
+
+      <Flex direction="column" justifyContent="space-evenly" width="350px">
+        <FormControl
+          action="/upload"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <FormLabel>Change profile picture</FormLabel>
+          <Input type="file" name="file_upload" />
+          <Button maxW="150px" marginTop={'20px'} type="submit">
+            Submit
+          </Button>
+        </FormControl>
+      </Flex>
     </Flex>
   );
 }
