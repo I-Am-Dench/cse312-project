@@ -202,10 +202,11 @@ function Board() {
       </div>
 
       <Form>
-        <FormControl>
+        <FormControl style={{ display: 'flex' }}>
           <FormLabel>Chat</FormLabel>
           <Input
             type="content"
+            marginTop={'20px'}
             onChange={e => {
               handleChangeValue(e, setContent);
             }}
@@ -220,9 +221,9 @@ function Board() {
             Send
           </Button>
         </FormControl>
-        <FormControl>
+        <FormControl style={{ display: 'flex' }}>
           <FormLabel>Add Image</FormLabel>
-          <Input type="file" name="image_upload" onChange={onImageChange} />
+          <Input type="file" name="image_upload" onChange={onImageChange} marginTop={'20px'} />
           <Button maxW="150px" marginTop={'20px'} onClick={handleImageSubmit}>
             Submit
           </Button>
