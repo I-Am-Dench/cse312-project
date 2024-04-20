@@ -7,15 +7,16 @@ import {
   Input,
   FormErrorMessage,
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 export default function Setting() {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMsg, setError] = useState('');
-
+  const { user, setAvatar } = useOutletContext();
   const navigate = useNavigate();
+  const formData = new FormData();
   function handleInput(event, onSetInput) {
     onSetInput(event.target.value);
   }
@@ -40,6 +41,33 @@ export default function Setting() {
       }
     } catch (err) {
       console.error(err);
+    }
+  }
+
+  async function handleFormSubmit(event) {
+    event.preventDefault();
+    try {
+      const response = await fetch(`/api/users/${user}/profile`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const json = await response.json();
+        setAvatar(json.success);
+        navigate('/');
+      } else {
+        const json = await response.json();
+        setError(json.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function onImageChange(event) {
+    if (event.target && event.target.files[0]) {
+      formData.append('image_upload', event.target.files[0]);
     }
   }
   return (
@@ -93,17 +121,20 @@ export default function Setting() {
       </Button>
 
       <Flex direction="column" justifyContent="space-evenly" width="350px">
-        <FormControl
-          action="/upload"
+        <form
+          action={`/api/users/${user}/profile`}
           method="post"
           enctype="multipart/form-data"
+          onSubmit={handleFormSubmit}
         >
-          <FormLabel>Change profile picture</FormLabel>
-          <Input type="file" name="file_upload" />
-          <Button maxW="150px" marginTop={'20px'} type="submit">
-            Submit
-          </Button>
-        </FormControl>
+          <FormControl>
+            <FormLabel>Change profile picture</FormLabel>
+            <Input type="file" name="image_upload" onChange={onImageChange} />
+            <Button maxW="150px" marginTop={'20px'} type="submit">
+              Submit
+            </Button>
+          </FormControl>
+        </form>
       </Flex>
     </Flex>
   );

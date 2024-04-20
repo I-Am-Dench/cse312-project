@@ -38,13 +38,14 @@ export default function Layout() {
       if (response.ok) {
         const json = await response.json();
         setUser(json.username);
+        setAvatar(json.avatar);
       }
     } catch (err) {
       console.error(err);
       setUser(null);
     }
   }
-  const value = { user, setUser };
+  const value = { user, setUser, setAvatar };
 
   useEffect(() => {
     validate().then();
