@@ -45,7 +45,7 @@ function Board() {
     }
   }
 
-  async function deleteComment() {
+  async function deleteComment(commentID) {
     try {
       const response = await fetch(`/api/boards/${boardID}/comments/${commentID}`, {
         method: 'POST',
@@ -120,16 +120,17 @@ function Board() {
           <p>Creator: {board.creatorID}</p>
         </>
       )}
-        <Container>
-  
-          {comments.map(comment => (
-            <Box key={comment.id} p={4} mb={4} border="1px solid #ccc" borderRadius="md">
-            <p>{comment.Content}</p>
-            
-            <p>Creator: {comment.CreatorId}</p> 
-            </Box>
-          ))}
-        </Container>
+      <br></br>
+
+          <div id="chat-messages">
+            {comments.map(comment => (
+              <div key={comment.id}>
+                <Button onClick={() => deleteComment(comment.id)} style={{ marginRight: '5px' }}>Delete</Button>
+                <b>{comment.CreatorId}</b>: {comment.Content}<br/>
+              </div>
+            ))}
+          </div>
+
         <Form>
           <FormControl>
             <FormLabel>Chat</FormLabel>
