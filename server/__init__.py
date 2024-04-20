@@ -1,6 +1,6 @@
 import os
 import uuid
-from flask import Flask, request, jsonify, Response, Request
+from flask import Flask, request, jsonify, Response, Request, send_from_directory
 from http import client
 import json
 
@@ -20,6 +20,9 @@ def get_session_username(request: Request):
 def create_app(test_config=None):
     app = Flask(__name__, static_folder="./static", static_url_path="/")
     app.config["UPLOAD_FOLDER"] = "/image/"
+    os.makedirs(
+        os.path.join(app.instance_path, app.config["UPLOAD_FOLDER"]), exist_ok=True
+    )
 
     @app.after_request
     def apply_no_sniff(response):
@@ -149,15 +152,23 @@ def create_app(test_config=None):
             return jsonify({"error": "no files to upload"}), client.CONFLICT
 
         image_file = request.files["image_upload"]
-        imagepath = os.path.join(app.config["UPLOAD_FOLDER"], uuid.uuid4().hex + ".jpg")
+        imagepath = os.path.join(
+            app.instance_path,
+            app.config["UPLOAD_FOLDER"],
+            uuid.uuid4().hex + ".jpg",
+        )
+        # TODO: Make it so when user uploadeds a new file that same filename will be used.
         result = accounts.update_picture(username, imagepath)
 
         if result:
-            return jsonify({"error": "Something went wrong"}), client.CONFLICT
-        else:
             image_file.save(imagepath)
-            print("saving file to this path", imagepath)
-            return jsonify({"success": True}), 201
+            return jsonify({"success": imagepath}), 201
+        else:
+            return jsonify({"error": "Something went wrong"}), client.CONFLICT
+
+    @app.route("/image/<path:image>", methods=["GET"])
+    def get_image(image):
+        return send_from_directory(app.config["UPLOAD_FOLDER"], image)
 
     @app.route("/api/boards/<board_id>/comments", methods=["POST"])
     @with_valid_session

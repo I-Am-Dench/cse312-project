@@ -44,7 +44,7 @@ export default function Layout() {
       setUser(null);
     }
   }
-  const value = { user, setUser };
+  const value = { user, setUser, setAvatar };
 
   useEffect(() => {
     validate().then();

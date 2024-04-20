@@ -14,8 +14,9 @@ export default function Setting() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMsg, setError] = useState('');
-  const { user } = useOutletContext();
+  const { user, setAvatar } = useOutletContext();
   const navigate = useNavigate();
+  const formData = new FormData();
   function handleInput(event, onSetInput) {
     onSetInput(event.target.value);
   }
@@ -40,6 +41,33 @@ export default function Setting() {
       }
     } catch (err) {
       console.error(err);
+    }
+  }
+
+  async function handleFormSubmit(event) {
+    event.preventDefault();
+    try {
+      const response = await fetch(`/api/users/${user}/profile`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const json = await response.json();
+        setAvatar(json.success);
+        navigate('/');
+      } else {
+        const json = await response.json();
+        setError(json.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function onImageChange(event) {
+    if (event.target && event.target.files[0]) {
+      formData.append('image_upload', event.target.files[0]);
     }
   }
   return (
@@ -97,13 +125,11 @@ export default function Setting() {
           action={`/api/users/${user}/profile`}
           method="post"
           enctype="multipart/form-data"
-          onSubmit={data => {
-            console.log(data);
-          }}
+          onSubmit={handleFormSubmit}
         >
           <FormControl>
             <FormLabel>Change profile picture</FormLabel>
-            <Input type="file" name="image_upload" />
+            <Input type="file" name="image_upload" onChange={onImageChange} />
             <Button maxW="150px" marginTop={'20px'} type="submit">
               Submit
             </Button>
