@@ -1,11 +1,23 @@
-from flask import Flask, request, jsonify, Response, Request
+from flask import Flask, request, jsonify, Response, Request, flash
 from http import client
 import json
+import os
+from werkzeug.utils import secure_filename
 
 import jwt
 
 from .auth import with_valid_session
 from .database import accounts, session, comments, boards
+
+UPLOAD_FOLDER = '../client/src/media'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def get_session_username(request: Request):
@@ -119,17 +131,35 @@ def create_app(test_config=None):
 
         return jsonify({'username': username}), client.CREATED
     
-    @app.route('/api/users/<username>/profile', methods=['POST'])
+    @app.route('/api/users/<username>/profile', methods=['GET', 'POST'])
     @with_valid_session
     def add_profilePicture():
-        # add functionality to update profile picture section in database
-        data = request.get_json()
-        username = data.get('username', None)
-        result = accounts.update_picture(username)
-        if result:
-            return jsonify({'error': "Something went wrong"}), client.CONFLICT
-        else:
-            return jsonify({"success": True}), 201
+        # if post request, save file to disc and and it to db
+        if request.method == 'POST':
+            if 'file' not in request.files:
+                flash('there was no part to the file') # might want to change these lines later after testing
+                return jsonify({'error': "file content missing"}), client.CONFLICT
+            file = request.files['file']
+            # if user doesn't select a file, browser sends empty file with empty name
+            if file.filename == '':
+                flash('No selected file') # might want to change these lines later after testing
+                return jsonify({'error': "no file selected"}), client.CONFLICT
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                # add file to database
+                data = request.get_json()
+                username = data.get('username', None)
+                result = accounts.update_picture(username)
+                if result:
+                    return jsonify({"success": True}), 201
+                else:
+                    return jsonify({'error': "Something went wrong"}), client.CONFLICT
+        if request.method == 'GET':
+            data = request.get_json()
+            username = data.get('username', None)
+            result = accounts.find_account(username)
+            return result['picture']
 
     @app.route('/api/boards/<board_id>/comments', methods=['POST'])
     @with_valid_session
@@ -140,10 +170,26 @@ def create_app(test_config=None):
         comment_id = comments.create_comment(board_id, username, content)
         return jsonify({"comment_id": str(comment_id)}), 201
     
-    @app.route('/api/boards/<board_id>/media', methods = ['POST'])
-    def add_media(board_id):
+    @app.route('/api/boards/<board_id>/media', methods = ['GET', 'POST'])
+    def handle_media(board_id):
         username = get_session_username(request)
         content = request.json['content']
+
+        if request.method == 'POST':
+            if 'file' not in request.files:
+                flash('there was no part to the file') # might want to change these lines later after testing
+                return jsonify({'error': "file content missing"}), client.CONFLICT
+            file = request.files['file']
+            # if user doesn't select a file, browser sends empty file with empty name
+            if file.filename == '':
+                flash('No selected file') # might want to change these lines later after testing
+                return jsonify({'error': "no file selected"}), client.CONFLICT
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                # insert media into comments db as html so it renders on page
+                #content = '<img src="./public/image/' + fileName + mediaType + '"' + '/>'
+                #comments.create_comment({"username": username, "id": str(messageID), "message": content})
         # add further functionality for media uploads
 
     @app.route('/api/boards/<board_id>/comments/<comment_id>', methods=['DELETE'])

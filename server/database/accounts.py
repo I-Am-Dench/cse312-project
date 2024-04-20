@@ -85,4 +85,7 @@ def update_picture(username: str, picturePath: str) -> bool:
     query = {"username": username}
     update = { "$set": { "picture": picturePath} }
     result = _accounts.update_one(query, update)
-    return result.modified_count > 0
+    if result.modified_count > 0:
+        return True
+    else:
+        return False
