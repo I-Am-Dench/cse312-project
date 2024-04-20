@@ -39,7 +39,8 @@ def create_app(test_config=None):
         token = request.cookies.get("AUTH_TOKEN", default=None)
         decoded = jwt.decode(token, "SECRET_KET", algorithms=["HS256"])
         username = decoded.get("uid")
-        return jsonify({"username": username}), client.OK
+        imagePath = accounts.find_account(username)["picture"]
+        return jsonify({"username": username, "avatar": imagePath}), client.OK
 
     @app.route("/auth/login", methods=["POST"])
     def auth_login():
