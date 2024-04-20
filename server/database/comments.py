@@ -20,10 +20,9 @@ def create_comment(board_id, creator_id, content):
     return comment_id
 
 def delete_comment(comment_id, user_id):
-    comment = chats.find_one({"id", comment_id}, {"_id": False})
-    if comment and comment['CreatorId'] == user_id:
-        result = chats.delete_one({"id": comment_id})
-        return result.deleted_count == 1
+    result = chats.delete_one({"id": comment_id})
+    if result:
+        return  result.deleted_count == 1
     else:
         return False
     

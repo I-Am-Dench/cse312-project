@@ -48,7 +48,7 @@ function Board() {
   async function deleteComment(commentID) {
     try {
       const response = await fetch(`/api/boards/${boardID}/comments/${commentID}`, {
-        method: 'POST',
+        method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           board_id: board.boardID,
@@ -58,7 +58,7 @@ function Board() {
 
       if (response.ok) {
         const json = await response.json();
-        navigate('/');
+        window.location.reload();
       } else {
         const json = await response.json()
         if(json.auth_error) {
@@ -122,14 +122,14 @@ function Board() {
       )}
       <br></br>
 
-          <div id="chat-messages">
-            {comments.map(comment => (
-              <div key={comment.id}>
-                <Button onClick={() => deleteComment(comment.id)} style={{ marginRight: '5px' }}>Delete</Button>
-                <b>{comment.CreatorId}</b>: {comment.Content}<br/>
-              </div>
-            ))}
+      <div id="chat-messages" style={{ maxHeight: '90vh', maxWidth: '90vw', height: '90vh', width: '60vw', overflow: 'auto' }}>
+        {comments.map(comment => (      
+          <div key={comment.id}>
+            <Button onClick={() => deleteComment(comment.id)} style={{ marginRight: '5px' }}>Delete</Button>
+            <b>{comment.CreatorId}</b>: {comment.Content}<br/>
           </div>
+        ))}
+      </div>
 
         <Form>
           <FormControl>
