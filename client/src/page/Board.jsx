@@ -9,6 +9,7 @@ import {
   Container,
   Box,
   IconButton,
+  Image,
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import {
@@ -29,6 +30,7 @@ function Board() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const navigate = useNavigate();
+  const formData = new FormData();
 
   function handleChangeValue(event, onSetValue) {
     onSetValue(event.target.value);
@@ -138,7 +140,7 @@ function Board() {
   }
   async function handleImageSubmit() {
     try {
-      const response = await fetch(`/api/boards/${boardID}/media"`, {
+      const response = await fetch(`/api/boards/${boardID}/media`, {
         method: 'POST',
         body: formData,
       });
@@ -178,28 +180,44 @@ function Board() {
       <br></br>
 
       <div
-        id="chat-messages"
-        style={{
-          maxHeight: '90vh',
-          maxWidth: '90vw',
-          height: '90vh',
-          width: '60vw',
-          overflow: 'auto',
-        }}
+  id="chat-messages"
+  style={{
+    maxHeight: '90vh',
+    maxWidth: '90vw',
+    height: '90vh',
+    width: '60vw',
+    overflow: 'auto',
+  }}
+>
+  {comments.map(comment => (
+    <div key={comment.id}>
+      {comment.imageUrl ? (
+        <div>
+          <Button
+        onClick={() => deleteComment(comment.id)}
+        style={{ marginRight: '5px' }}
       >
-        {comments.map(comment => (
-          <div key={comment.id}>
-            <Button
-              onClick={() => deleteComment(comment.id)}
-              style={{ marginRight: '5px' }}
-            >
-              Delete
-            </Button>
-            <b>{comment.CreatorId}</b>: {comment.Content}
-            <br />
-          </div>
-        ))}
-      </div>
+        Delete
+      </Button>
+          <b style={{ marginRight: '5px' }}>{comment.CreatorId}</b>: <Image src={comment.imageUrl} boxSize='100px' objectFit='cover' style={{ marginLeft: '5px', marginTop: '5px' }}/>
+        </div>
+      ) : (
+        <div>
+          <Button
+        onClick={() => deleteComment(comment.id)}
+        style={{ marginRight: '5px' }}
+      >
+        Delete
+      </Button>
+          <b>{comment.CreatorId}</b>: {comment.Content}
+        </div>
+      )}
+      <br />
+    </div>
+  ))}
+  <br></br>
+  <br></br>
+</div>
 
       <Form>
         <FormControl style={{ display: 'flex' }}>
