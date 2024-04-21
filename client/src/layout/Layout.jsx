@@ -7,9 +7,9 @@ import {
   BreadcrumbLink,
   Text,
   Flex,
-  Spacer,
   Button,
   Avatar,
+  Box
 } from '@chakra-ui/react';
 
 export default function Layout() {
@@ -58,8 +58,8 @@ export default function Layout() {
         </Text>
         <Flex width="83%" justifyContent="center">
           {user ? (
-            <Text alignSelf={'center'} fontSize="xl" justifyItems={'center'}>
-              {user}
+            <Text alignSelf={'center'} fontSize="2xl" justifyItems={'center'}>
+              Welcome, {user}!
             </Text>
           ) : (
             <></>
