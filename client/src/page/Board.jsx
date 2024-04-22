@@ -9,6 +9,7 @@ import {
   Container,
   Box,
   IconButton,
+  Image,
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import {
@@ -29,6 +30,7 @@ function Board() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const navigate = useNavigate();
+  const formData = new FormData();
 
   function handleChangeValue(event, onSetValue) {
     onSetValue(event.target.value);
@@ -138,7 +140,7 @@ function Board() {
   }
   async function handleImageSubmit() {
     try {
-      const response = await fetch(`/api/boards/${boardID}/media"`, {
+      const response = await fetch(`/api/boards/${boardID}/media`, {
         method: 'POST',
         body: formData,
       });
@@ -189,23 +191,46 @@ function Board() {
       >
         {comments.map(comment => (
           <div key={comment.id}>
-            <Button
-              onClick={() => deleteComment(comment.id)}
-              style={{ marginRight: '5px' }}
-            >
-              Delete
-            </Button>
-            <b>{comment.CreatorId}</b>: {comment.Content}
+            {comment.imageUrl ? (
+              <div>
+                <Button
+                  onClick={() => deleteComment(comment.id)}
+                  style={{ marginRight: '5px' }}
+                >
+                  Delete
+                </Button>
+                <b style={{ marginRight: '5px' }}>{comment.CreatorId}</b>:{' '}
+                <Image
+                  src={comment.imageUrl}
+                  boxSize="100px"
+                  objectFit="cover"
+                  style={{ marginLeft: '5px', marginTop: '5px' }}
+                />
+              </div>
+            ) : (
+              <div>
+                <Button
+                  onClick={() => deleteComment(comment.id)}
+                  style={{ marginRight: '5px' }}
+                >
+                  Delete
+                </Button>
+                <b>{comment.CreatorId}</b>: {comment.Content}
+              </div>
+            )}
             <br />
           </div>
         ))}
+        <br></br>
+        <br></br>
       </div>
 
       <Form>
-        <FormControl>
+        <FormControl style={{ display: 'flex' }}>
           <FormLabel>Chat</FormLabel>
           <Input
             type="content"
+            marginTop={'20px'}
             onChange={e => {
               handleChangeValue(e, setContent);
             }}
@@ -220,9 +245,14 @@ function Board() {
             Send
           </Button>
         </FormControl>
-        <FormControl>
+        <FormControl style={{ display: 'flex' }}>
           <FormLabel>Add Image</FormLabel>
-          <Input type="file" name="image_upload" onChange={onImageChange} />
+          <Input
+            type="file"
+            name="image_upload"
+            onChange={onImageChange}
+            marginTop={'20px'}
+          />
           <Button maxW="150px" marginTop={'20px'} onClick={handleImageSubmit}>
             Submit
           </Button>

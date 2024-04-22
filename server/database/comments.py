@@ -19,6 +19,18 @@ def create_comment(board_id, creator_id, content):
     chats.insert_one(new_comment)
     return comment_id
 
+def create_media(board_id, creator_id, path):
+    comment_id = token_urlsafe()
+    new_comment = {
+        "id": comment_id,
+        "BoardId": board_id,
+        "CreatorId": creator_id,
+        "imageUrl": path,
+        "Time": datetime.now()
+    }
+    chats.insert_one(new_comment)
+    return comment_id
+
 def delete_comment(comment_id, user_id):
     result = chats.delete_one({"id": comment_id})
     if result:

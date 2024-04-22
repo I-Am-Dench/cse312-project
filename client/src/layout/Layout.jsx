@@ -7,10 +7,11 @@ import {
   BreadcrumbLink,
   Text,
   Flex,
-  Spacer,
   Button,
   Avatar,
+  Box
 } from '@chakra-ui/react';
+import socket from '../socket';
 
 export default function Layout() {
   const [user, setUser] = useState(null);
@@ -50,6 +51,12 @@ export default function Layout() {
   useEffect(() => {
     validate().then();
   }, []);
+
+  useEffect(() => {
+    if (user == null && socket.connect) {
+      socket.disconnect();
+    }
+  }, [user]);
   return (
     <div className="layout">
       <Flex margin="20px" justifyContent={'space-between'}>
@@ -58,8 +65,8 @@ export default function Layout() {
         </Text>
         <Flex width="83%" justifyContent="center">
           {user ? (
-            <Text alignSelf={'center'} fontSize="xl" justifyItems={'center'}>
-              {user}
+            <Text alignSelf={'center'} fontSize="2xl" justifyItems={'center'}>
+              Welcome, {user}!
             </Text>
           ) : (
             <></>
@@ -119,7 +126,11 @@ function PrivateNavigation() {
           Home
         </BreadcrumbLink>
       </BreadcrumbItem>
-
+      <BreadcrumbItem>
+        <BreadcrumbLink as={NavLink} to="chat">
+          Live Chat
+        </BreadcrumbLink>
+      </BreadcrumbItem>
       <BreadcrumbItem>
         <BreadcrumbLink as={NavLink} to="settings">
           Settings
