@@ -5,9 +5,7 @@ services:
     ports:
       - "27017:27017"
   app:
-    build:
-      context: .
-      target: dev
+    build: .
     environment:
       WAIT_HOSTS: mongo:27017
     ports:
