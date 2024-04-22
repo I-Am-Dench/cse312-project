@@ -267,7 +267,7 @@ def create_app(test_config=None):
         join_room(room)
         emit("status", {"msg": f"{username} has entered the room."}, room=room)
         chats_log = chat.get_chats(room)
-        emit("get_chat_log", {"payload": chats_log})
+        emit("get_chat_log", {"payload": chats_log}, to=request.sid)
 
     @socketio.on("leave")
     def on_leave(data):
