@@ -25,6 +25,8 @@ CMD /wait && flask run --host=0.0.0.0 --port=8080
 # ===== PROD CONFIG
 FROM base as prod
 
+ENV SECURE true
+
 RUN cd client && npm install && npm run build
 
 CMD /wait && flask run --host=0.0.0.0 --port=8080

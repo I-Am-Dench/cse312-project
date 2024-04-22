@@ -6,8 +6,8 @@ Check out the site here: [https://rossien.com](https://rossien.com)
 
 The `Dockerfile` contains two build stages: **dev** and **prod**. Both stages setup the Flask environment variables, install python requirements, install node dependencies, and build the application's frontend. The only exception is the `CMD` directive:
 
-- **dev**: Runs the server with the default `flask` program.
-- **prod**: Installs the `waitress` program and uses it to run the server in a production environment.
+- **dev**: Builds the React app with dev configurations, and runs the server with the default `flask` program.
+- **prod**: Build the React app with production configurations, sets the `SECURE` environment variable to **true** (for enabling secure cookies), and runs the server with the default `flask` program.
 
 While you could just change the build target in the `docker-compose.yml` from **dev** to **prod**, for convenience, `docker-compose.prod.yml` already has this changed.
 
