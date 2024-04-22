@@ -321,6 +321,10 @@ def create_app(test_config=None):
             )
             chat.add_chat(room, message, user, imagePath)
 
+    @socketio.on("connection_error")
+    def handle_error(err):
+        print(err, file=sys.stderr)
+
     def get_user_from_token(token):
         if token:
             try:
