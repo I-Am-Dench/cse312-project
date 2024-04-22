@@ -1,13 +1,16 @@
 import os
+import sys
 import uuid
+
 from flask import Flask, request, jsonify, Response, Request, send_from_directory
+from flask_socketio import SocketIO, emit, join_room, leave_room, disconnect
 from http import client
 import json
 
 import jwt
 
 from .auth import with_valid_session
-from .database import accounts, session, comments, boards
+from .database import accounts, session, comments, boards, chat
 
 
 def get_session_username(request: Request):
@@ -23,6 +26,7 @@ def create_app(test_config=None):
     os.makedirs(
         os.path.join(app.instance_path, app.config["UPLOAD_FOLDER"]), exist_ok=True
     )
+    socketio = SocketIO(app, cors_allowed_origins="*")
 
     @app.after_request
     def apply_no_sniff(response):
@@ -183,10 +187,10 @@ def create_app(test_config=None):
     @app.route("/api/boards/<board_id>/media", methods=["POST"])
     def add_media(board_id):
         username = get_session_username(request)
-        #content = request.json["content"]
+        # content = request.json["content"]
         # add further functionality for media uploads
         # add functionality to update profile picture section in database
-        #username_token = get_session_username(request)
+        # username_token = get_session_username(request)
 
         if "image_upload" not in request.files:
             return jsonify({"error": "no files to upload"}), client.CONFLICT
@@ -262,5 +266,55 @@ def create_app(test_config=None):
         #     return jsonify({"success": "Board successfully deleted"}), client.OK
         # else:
         #     return jsonify({"error": "Failed to delete board or board not found"}), client.NOT_FOUND
+
+    @socketio.on("connect")
+    def handle_connect():
+        print("Client connected:", request.sid)
+        emit("con", {"data": f"id: {request.sid} is connected"})
+
+    @socketio.on("disconnect")
+    def handle_disconnect():
+        print("Client disconnected:", request.sid)
+
+    @socketio.on("join")
+    def on_join(data):
+        username = get_user_from_token(request.cookies.get("AUTH_TOKEN"))
+        room = data["room"]
+        join_room(room)
+        emit("status", {"msg": f"{username} has entered the room."}, room=room)
+        chats_log = chat.get_chats(room)
+        emit("get_chat_log", {"payload": chats_log}, to=request.sid)
+
+    @socketio.on("leave")
+    def on_leave(data):
+        username = get_user_from_token(request.cookies.get("AUTH_TOKEN"))
+        room = data["room"]
+        leave_room(room)
+        emit("status", {"msg": f"{username} has left the room."}, room=room)
+
+    @socketio.on("send_message")
+    def handle_message(data):
+        room = data["room"]
+        user = get_user_from_token(request.cookies.get("AUTH_TOKEN"))
+        if user:
+            imagePath = accounts.find_account(user)["picture"]
+            message = data["message"]
+            res = {"message": message, "user": user, "avatar": imagePath}
+            print(f"Message received in room {room}: {message} from {user}")
+            emit(
+                "receive_message",
+                res,
+                room=room,
+            )
+            chat.add_chat(room, message, user, imagePath)
+
+    def get_user_from_token(token):
+        if token:
+            try:
+                decoded = jwt.decode(token, "SECRET_KET", algorithms=["HS256"])
+                return decoded.get("uid")
+            except jwt.ExpiredSignatureError:
+                return None
+        return None
 
     return app

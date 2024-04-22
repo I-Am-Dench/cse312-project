@@ -180,44 +180,50 @@ function Board() {
       <br></br>
 
       <div
-  id="chat-messages"
-  style={{
-    maxHeight: '90vh',
-    maxWidth: '90vw',
-    height: '90vh',
-    width: '60vw',
-    overflow: 'auto',
-  }}
->
-  {comments.map(comment => (
-    <div key={comment.id}>
-      {comment.imageUrl ? (
-        <div>
-          <Button
-        onClick={() => deleteComment(comment.id)}
-        style={{ marginRight: '5px' }}
+        id="chat-messages"
+        style={{
+          maxHeight: '90vh',
+          maxWidth: '90vw',
+          height: '90vh',
+          width: '60vw',
+          overflow: 'auto',
+        }}
       >
-        Delete
-      </Button>
-          <b style={{ marginRight: '5px' }}>{comment.CreatorId}</b>: <Image src={comment.imageUrl} boxSize='100px' objectFit='cover' style={{ marginLeft: '5px', marginTop: '5px' }}/>
-        </div>
-      ) : (
-        <div>
-          <Button
-        onClick={() => deleteComment(comment.id)}
-        style={{ marginRight: '5px' }}
-      >
-        Delete
-      </Button>
-          <b>{comment.CreatorId}</b>: {comment.Content}
-        </div>
-      )}
-      <br />
-    </div>
-  ))}
-  <br></br>
-  <br></br>
-</div>
+        {comments.map(comment => (
+          <div key={comment.id}>
+            {comment.imageUrl ? (
+              <div>
+                <Button
+                  onClick={() => deleteComment(comment.id)}
+                  style={{ marginRight: '5px' }}
+                >
+                  Delete
+                </Button>
+                <b style={{ marginRight: '5px' }}>{comment.CreatorId}</b>:{' '}
+                <Image
+                  src={comment.imageUrl}
+                  boxSize="100px"
+                  objectFit="cover"
+                  style={{ marginLeft: '5px', marginTop: '5px' }}
+                />
+              </div>
+            ) : (
+              <div>
+                <Button
+                  onClick={() => deleteComment(comment.id)}
+                  style={{ marginRight: '5px' }}
+                >
+                  Delete
+                </Button>
+                <b>{comment.CreatorId}</b>: {comment.Content}
+              </div>
+            )}
+            <br />
+          </div>
+        ))}
+        <br></br>
+        <br></br>
+      </div>
 
       <Form>
         <FormControl style={{ display: 'flex' }}>
@@ -241,7 +247,12 @@ function Board() {
         </FormControl>
         <FormControl style={{ display: 'flex' }}>
           <FormLabel>Add Image</FormLabel>
-          <Input type="file" name="image_upload" onChange={onImageChange} marginTop={'20px'} />
+          <Input
+            type="file"
+            name="image_upload"
+            onChange={onImageChange}
+            marginTop={'20px'}
+          />
           <Button maxW="150px" marginTop={'20px'} onClick={handleImageSubmit}>
             Submit
           </Button>
