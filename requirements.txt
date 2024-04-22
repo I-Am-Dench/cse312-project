@@ -2,3 +2,5 @@ flask
 bcrypt
 pyjwt
 pymongo
+flask-socketio
+# Flask-SocketIO==5.1.1
