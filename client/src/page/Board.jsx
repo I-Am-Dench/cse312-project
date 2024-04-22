@@ -199,12 +199,12 @@ function Board() {
                 >
                   Delete
                 </Button>
-                <b style={{ marginRight: '5px' }}>{comment.CreatorId}</b>:{' '}
+                <b style={{ marginRight: '5px' }}>{comment.CreatorId}</b>:
                 <Image
                   src={comment.imageUrl}
                   boxSize="100px"
                   objectFit="cover"
-                  style={{ marginLeft: '5px', marginTop: '5px' }}
+                  style={{ margin: 'auto' }}
                 />
               </div>
             ) : (

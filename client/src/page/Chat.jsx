@@ -54,6 +54,7 @@ export default function Chat() {
           <Message
             isUser={item.user == user}
             text={`${item.user}: ${item.message}`}
+            avatar={item.avatar}
           />
         );
       })}
@@ -62,10 +63,10 @@ export default function Chat() {
   );
 }
 function Message(props) {
-  const { isUser, text } = props;
+  const { isUser, text, avatar } = props;
   return (
     <Flex w="100%" justify={isUser ? 'flex-end' : 'flex-start'}>
-      <Avatar alignSelf={'center'} marginX={'10px'} />
+      <Avatar src={avatar} alignSelf={'center'} marginX={'10px'} />
       <Text
         bg={isUser ? 'blue.300' : 'gray.500'}
         color="white"
