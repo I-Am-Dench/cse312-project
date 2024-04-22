@@ -265,6 +265,10 @@ def create_app(test_config=None):
 
     @socketio.on("connect")
     def handle_connect():
+        token = request.cookies.get("AUTH_TOKEN")
+        if token == None and session.validateSession(token):
+            disconnect()
+            return
         print("Client connected:", request.sid)
         emit("con", {"data": f"id: {request.sid} is connected"})
 
@@ -274,6 +278,10 @@ def create_app(test_config=None):
 
     @socketio.on("join")
     def on_join(data):
+        token = request.cookies.get("AUTH_TOKEN")
+        if token == None and session.validateSession(token):
+            disconnect()
+            return
         username = get_user_from_token(request.cookies.get("AUTH_TOKEN"))
         room = data["room"]
         join_room(room)
@@ -283,6 +291,11 @@ def create_app(test_config=None):
 
     @socketio.on("leave")
     def on_leave(data):
+        token = request.cookies.get("AUTH_TOKEN")
+        if token == None and session.validateSession(token):
+            disconnect()
+            return
+
         username = get_user_from_token(request.cookies.get("AUTH_TOKEN"))
         room = data["room"]
         leave_room(room)
@@ -290,6 +303,10 @@ def create_app(test_config=None):
 
     @socketio.on("send_message")
     def handle_message(data):
+        token = request.cookies.get("AUTH_TOKEN")
+        if token == None and session.validateSession(token):
+            disconnect()
+            return
         room = data["room"]
         user = get_user_from_token(request.cookies.get("AUTH_TOKEN"))
         if user:
