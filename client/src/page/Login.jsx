@@ -11,7 +11,7 @@ import { useOutletContext } from 'react-router-dom';
 
 export default function Login() {
   const { user, setUser } = useOutletContext();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isValid, setValid] = useState(true);
   function handleInput(event, onSetInput) {
@@ -38,7 +38,7 @@ export default function Login() {
   }
 
   async function handleLogin() {
-    const success = await login(email, password);
+    const success = await login(username, password);
     if (!success) {
       setValid(false);
     }
@@ -52,14 +52,14 @@ export default function Login() {
     >
       <Flex direction="column" justifyContent="space-evenly" width="350px">
         <FormControl isInvalid={!isValid}>
-          <FormErrorMessage>Email/Password is invalid.</FormErrorMessage>
+          <FormErrorMessage>Username/Password is invalid.</FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={!isValid}>
-          <FormLabel>Email address</FormLabel>
+          <FormLabel>username</FormLabel>
           <Input
-            type="email"
+            type="text"
             onChange={e => {
-              handleInput(e, setEmail);
+              handleInput(e, setUsername);
             }}
           />
         </FormControl>
