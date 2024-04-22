@@ -187,8 +187,24 @@ def create_app(test_config=None):
     @app.route("/api/boards/<board_id>/media", methods=["POST"])
     def add_media(board_id):
         username = get_session_username(request)
-        content = request.json["content"]
+        # content = request.json["content"]
         # add further functionality for media uploads
+        # add functionality to update profile picture section in database
+        # username_token = get_session_username(request)
+
+        if "image_upload" not in request.files:
+            return jsonify({"error": "no files to upload"}), client.CONFLICT
+
+        image_file = request.files["image_upload"]
+        imagepath = os.path.join(
+            app.instance_path,
+            app.config["UPLOAD_FOLDER"],
+            uuid.uuid4().hex + ".jpg",
+        )
+        # TODO: Make it so when user uploadeds a new file that same filename will be used.
+        result = comments.create_media(board_id, username, imagepath)
+        image_file.save(imagepath)
+        return jsonify({"comment_id": str(result)}), 201
 
     @app.route("/api/boards/<board_id>/comments/<comment_id>", methods=["DELETE"])
     @with_valid_session
