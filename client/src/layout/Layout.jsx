@@ -9,7 +9,7 @@ import {
   Flex,
   Button,
   Avatar,
-  Box
+  Box,
 } from '@chakra-ui/react';
 import socket from '../socket';
 
@@ -61,7 +61,7 @@ export default function Layout() {
     <div className="layout">
       <Flex margin="20px" justifyContent={'space-between'}>
         <Text alignSelf={'center'} width="17%" fontSize="xl">
-          Jesse Fan Club's web project
+          Boardunity
         </Text>
         <Flex width="83%" justifyContent="center">
           {user ? (

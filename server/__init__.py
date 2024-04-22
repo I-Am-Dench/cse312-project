@@ -26,7 +26,7 @@ def create_app(test_config=None):
     os.makedirs(
         os.path.join(app.instance_path, app.config["UPLOAD_FOLDER"]), exist_ok=True
     )
-    socketio = SocketIO(app, cors_allowed_origins="*")
+    socketio = SocketIO(app, cors_allowed_origins="*", ssl_context="adhoc")
 
     @app.after_request
     def apply_no_sniff(response):
