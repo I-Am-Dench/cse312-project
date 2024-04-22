@@ -113,6 +113,9 @@ def create_app(test_config=None):
         if request.json["newPassword"] != request.json["confirmPassword"]:
             return jsonify({"error": "passwords do not match"}), client.NOT_FOUND
 
+        if not accounts.is_valid_password(request.json["newPassword"]):
+            return jsonify({"error": "Invalid password"}), client.BAD_REQUEST
+
         accounts.update_account_password(username, request.json["newPassword"])
 
         return jsonify({"success": "password was changed"}), client.ACCEPTED
