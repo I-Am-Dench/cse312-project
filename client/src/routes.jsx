@@ -9,9 +9,9 @@ import Home from './page/Home';
 import Register from './page/Register';
 import Login from './page/Login';
 import Layout from './layout/Layout';
-import Board from './page/Board';
+import Board from './page/Board'
 import Setting from './page/Setting';
-import Chat from './page/Chat';
+
 const router = createHashRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
@@ -41,15 +41,11 @@ const router = createHashRouter(
           </PrivateRoute>
         }
       ></Route>
+
       <Route
-        path="chat"
-        element={
-          <PrivateRoute>
-            <Chat />
-          </PrivateRoute>
-        }
+        path="boards/:boardID"
+        element={<Board />}
       ></Route>
-      <Route path="boards/:boardID" element={<Board />}></Route>
     </Route>
   )
 );

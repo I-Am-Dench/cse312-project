@@ -2,8 +2,6 @@ import { Button, Flex, Link, FormControl, FormLabel, Input, FormErrorMessage, Co
 import { Form, Link as RouterLink, useOutletContext, useNavigate} from 'react-router-dom';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton} from '@chakra-ui/react'
 import { useState, useEffect} from 'react';
-import '/src/index.css'; // This goes up one directory level from 'page' to 'src'
-
 
 function Home() {
   const { user, setUser } = useOutletContext();
@@ -62,8 +60,8 @@ function Home() {
   
   return (
     <Flex direction={'column'} justifyContent="center" alignItems="center" height="60vh">
-      <h1 style={{fontSize: '48px', margin: '20px 0'}}>Boards</h1>
-      <Container className="boards-container">
+      <h1>Boards</h1>
+      <Container>
         <Flex flexWrap="wrap" justifyContent="center" alignItems="center">
           {boards.map(board => (
             <Link key={board.id} as={RouterLink} to={`boards/${board.boardID}`} m={2} p={4} border="1px solid #ccc" borderRadius="md">
