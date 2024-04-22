@@ -7,15 +7,17 @@ import {
   BreadcrumbLink,
   Text,
   Flex,
+  Spacer,
   Button,
+<<<<<<< HEAD
   Avatar,
   Box,
+=======
+>>>>>>> main
 } from '@chakra-ui/react';
-import socket from '../socket';
 
 export default function Layout() {
   const [user, setUser] = useState(null);
-  const [avatar, setAvatar] = useState('');
 
   async function logout() {
     if (!user) return;
@@ -39,24 +41,17 @@ export default function Layout() {
       if (response.ok) {
         const json = await response.json();
         setUser(json.username);
-        setAvatar(json.avatar);
       }
     } catch (err) {
       console.error(err);
       setUser(null);
     }
   }
-  const value = { user, setUser, setAvatar };
+  const value = { user, setUser };
 
   useEffect(() => {
     validate().then();
   }, []);
-
-  useEffect(() => {
-    if (user == null && socket.connect) {
-      socket.disconnect();
-    }
-  }, [user]);
   return (
     <div className="layout">
       <Flex margin="20px" justifyContent={'space-between'}>
@@ -65,8 +60,8 @@ export default function Layout() {
         </Text>
         <Flex width="83%" justifyContent="center">
           {user ? (
-            <Text alignSelf={'center'} fontSize="2xl" justifyItems={'center'}>
-              Welcome, {user}!
+            <Text alignSelf={'center'} fontSize="xl" justifyItems={'center'}>
+              {user}
             </Text>
           ) : (
             <></>
@@ -75,13 +70,6 @@ export default function Layout() {
         {user ? (
           <>
             <PrivateNavigation />
-            <Avatar
-              src={avatar}
-              size={'xs'}
-              ml={'10px'}
-              mr={'10px'}
-              alignSelf={'center'}
-            />
             <Button maxW="150px" margin={'20px'} onClick={logout}>
               Logout
             </Button>
@@ -126,11 +114,7 @@ function PrivateNavigation() {
           Home
         </BreadcrumbLink>
       </BreadcrumbItem>
-      <BreadcrumbItem>
-        <BreadcrumbLink as={NavLink} to="chat">
-          Live Chat
-        </BreadcrumbLink>
-      </BreadcrumbItem>
+
       <BreadcrumbItem>
         <BreadcrumbLink as={NavLink} to="settings">
           Settings
