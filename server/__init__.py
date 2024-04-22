@@ -84,6 +84,7 @@ def create_app(test_config=None):
             expires=sess["expires"],
             httponly=True,
             samesite="Lax",
+            secure=secure
         )
 
         response.set_data(json.dumps({"username": account["username"]}))
