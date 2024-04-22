@@ -23,6 +23,6 @@ CMD /wait && flask run --host=0.0.0.0 --port=8080
 # ===== PROD CONFIG
 FROM base as prod
 
-RUN pip3 install waitress
+RUN pip3 install gunicorn
 RUN cd client && npm install && npm run build
-CMD /wait && waitress-serve --host=0.0.0.0 --port=8080 --call server:create_app
+CMD /wait && gunicorn -w 4 -b 0.0.0.0:8080 'server:create_app()'
