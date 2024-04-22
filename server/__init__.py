@@ -28,6 +28,8 @@ def create_app(test_config=None):
     )
     socketio = SocketIO(app, cors_allowed_origins="*")
 
+    secure = os.getenv('SECURE') == 'true'
+
     @app.after_request
     def apply_no_sniff(response):
         response.headers["X-Content-Type-Options"] = "nosniff"
