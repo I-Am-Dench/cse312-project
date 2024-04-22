@@ -17,12 +17,18 @@ EXPOSE 8080
 
 # ===== DEV CONFIG
 FROM base as dev
+
 RUN cd client && npm install && npm run build:dev
+
 CMD /wait && flask run --host=0.0.0.0 --port=8080
 
 # ===== PROD CONFIG
 FROM base as prod
 
-RUN pip3 install gunicorn
 RUN cd client && npm install && npm run build
-CMD /wait && gunicorn -w 4 -b 0.0.0.0:8080 'server:create_app()'
+
+CMD /wait && flask run --host=0.0.0.0 --port=8080
+
+# RUN pip3 install gunicorn
+# RUN cd client && npm install && npm run build
+# CMD /wait && gunicorn -w 4 -b 0.0.0.0:8080 'server:create_app()'
