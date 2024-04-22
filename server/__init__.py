@@ -64,12 +64,15 @@ def create_app(test_config=None):
                 client.BAD_REQUEST,
             )
 
-        email = request.authorization.get("username", "")
+        username = request.authorization.get("username", "")
         password = request.authorization.get("password", "")
 
-        account = accounts.check_credentials(email, password)
+        account = accounts.check_credentials(username, password)
         if account is None:
-            return jsonify({"error": "Invalid email and/or password"}), client.NOT_FOUND
+            return (
+                jsonify({"error": "Invalid username and/or password"}),
+                client.NOT_FOUND,
+            )
 
         sess = session.createSession(account.get("username", ""))
 
@@ -102,10 +105,7 @@ def create_app(test_config=None):
         decoded = jwt.decode(token, "SECRET_KET", algorithms=["HS256"])
         username = decoded.get("uid")
 
-        account = accounts.find_account(username)
-
-        email = account["email"]
-        account = accounts.check_credentials(email, request.json["oldPassword"])
+        account = accounts.check_credentials(username, request.json["oldPassword"])
 
         if account is None:
             return jsonify({"error": "Invalid password"}), client.NOT_FOUND
@@ -113,7 +113,10 @@ def create_app(test_config=None):
         if request.json["newPassword"] != request.json["confirmPassword"]:
             return jsonify({"error": "passwords do not match"}), client.NOT_FOUND
 
-        accounts.update_account_password(email, request.json["newPassword"])
+        if not accounts.is_valid_password(request.json["newPassword"]):
+            return jsonify({"error": "Invalid password"}), client.BAD_REQUEST
+
+        accounts.update_account_password(username, request.json["newPassword"])
 
         return jsonify({"success": "password was changed"}), client.ACCEPTED
 
@@ -125,10 +128,6 @@ def create_app(test_config=None):
         if not accounts.is_valid_username(username):
             return jsonify({"error": "Invalid username"}), client.BAD_REQUEST
 
-        email = data.get("email", None)
-        if not accounts.is_valid_email(email):
-            return jsonify({"error": "Invalid email"}), client.BAD_REQUEST
-
         password = data.get("password", None)
         if not accounts.is_valid_password(password):
             return jsonify({"error": "Invalid password"}), client.BAD_REQUEST
@@ -137,10 +136,7 @@ def create_app(test_config=None):
         if password != confirm_password:
             return jsonify({"error": "Passwords do not match"}), client.BAD_REQUEST
 
-        if accounts.find_account_by_email(email) is not None:
-            return jsonify({"error": "Email is already in use"}), client.CONFLICT
-
-        if not accounts.create_account(email, username, password):
+        if not accounts.create_account(username, password):
             return jsonify({"error": "Username is already in use"}), client.CONFLICT
 
         return jsonify({"username": username}), client.CREATED
@@ -269,6 +265,10 @@ def create_app(test_config=None):
 
     @socketio.on("connect")
     def handle_connect():
+        token = request.cookies.get("AUTH_TOKEN")
+        if token == None and session.validateSession(token):
+            disconnect()
+            return
         print("Client connected:", request.sid)
         emit("con", {"data": f"id: {request.sid} is connected"})
 
@@ -278,6 +278,10 @@ def create_app(test_config=None):
 
     @socketio.on("join")
     def on_join(data):
+        token = request.cookies.get("AUTH_TOKEN")
+        if token == None and session.validateSession(token):
+            disconnect()
+            return
         username = get_user_from_token(request.cookies.get("AUTH_TOKEN"))
         room = data["room"]
         join_room(room)
@@ -287,6 +291,11 @@ def create_app(test_config=None):
 
     @socketio.on("leave")
     def on_leave(data):
+        token = request.cookies.get("AUTH_TOKEN")
+        if token == None and session.validateSession(token):
+            disconnect()
+            return
+
         username = get_user_from_token(request.cookies.get("AUTH_TOKEN"))
         room = data["room"]
         leave_room(room)
@@ -294,6 +303,10 @@ def create_app(test_config=None):
 
     @socketio.on("send_message")
     def handle_message(data):
+        token = request.cookies.get("AUTH_TOKEN")
+        if token == None and session.validateSession(token):
+            disconnect()
+            return
         room = data["room"]
         user = get_user_from_token(request.cookies.get("AUTH_TOKEN"))
         if user:

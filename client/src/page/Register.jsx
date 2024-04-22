@@ -22,7 +22,6 @@ export default function Register() {
 function RegisterForm() {
   const { user } = useOutletContext();
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [msg, setMsg] = useState('');
@@ -31,27 +30,19 @@ function RegisterForm() {
     onSetValue(event.target.value);
   }
   async function handleSubmit() {
-    if (password === confirm) {
-      const [success, message] = await register(
-        username,
-        email,
-        password,
-        confirm
-      );
-      if (success) {
-        navigate('/');
-      } else {
-        setMsg(message);
-      }
+    const [success, message] = await register(username, password, confirm);
+    if (success) {
+      navigate('/');
     } else {
-      setMsg('Passwords do not match');
+      setMsg(message);
     }
   }
+
   function hasErrorMsg(value) {
     return msg !== '' && msg.toLowerCase().includes(value);
   }
 
-  async function register(username, email, password, confirmPassword) {
+  async function register(username, password, confirmPassword) {
     if (user) return [false, 'already logged in'];
     try {
       const response = await fetch('/api/users', {
@@ -59,7 +50,6 @@ function RegisterForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: username,
-          email: email,
           password: password,
           confirmPassword: confirmPassword,
         }),
@@ -96,20 +86,7 @@ function RegisterForm() {
             <FormErrorMessage>{msg}</FormErrorMessage>
           )}
         </FormControl>
-        <FormControl isInvalid={hasErrorMsg('email')}>
-          <FormLabel>Email address</FormLabel>
-          <Input
-            type="email"
-            onChange={e => {
-              handleChangeValue(e, setEmail);
-            }}
-          />
-          {!hasErrorMsg('email') ? (
-            <FormHelperText>Enter an email.</FormHelperText>
-          ) : (
-            <FormErrorMessage>{msg}</FormErrorMessage>
-          )}
-        </FormControl>
+
         <FormControl isInvalid={hasErrorMsg('password')}>
           <FormLabel>Password</FormLabel>
           <Input
