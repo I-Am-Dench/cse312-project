@@ -132,6 +132,11 @@ function PrivateNavigation() {
         </BreadcrumbLink>
       </BreadcrumbItem>
       <BreadcrumbItem>
+        <BreadcrumbLink as={NavLink} to="game">
+          Game
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbItem>
         <BreadcrumbLink as={NavLink} to="settings">
           Settings
         </BreadcrumbLink>
