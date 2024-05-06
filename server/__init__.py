@@ -10,6 +10,7 @@ import json
 import jwt
 
 from .auth import with_valid_session
+from .rate import RateLimiter
 from .database import accounts, session, comments, boards, chat
 
 
@@ -29,6 +30,13 @@ def create_app(test_config=None):
     socketio = SocketIO(app, cors_allowed_origins="*")
 
     secure = os.getenv('SECURE') == 'true'
+
+    rate_limiter = RateLimiter()
+
+    @app.before_request
+    def check_request_limit():
+        if not rate_limiter.request(request.remote_addr):
+            return "Too Many Requests", client.TOO_MANY_REQUESTS
 
     @app.after_request
     def apply_no_sniff(response):
