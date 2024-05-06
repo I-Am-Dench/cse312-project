@@ -1,5 +1,12 @@
 # Boardunity - Jessefanclub
 
+Objective 3: Creativity and Documentation:
+1. While testing, if you do not already have an account, create one
+2. After logging in, in the navbar, navigate to the game route
+3. After heading to the game page, click play.
+4. Verify that the game runs
+5. Press left and right arrow keys to move, and press space to shoot laser
+
 Check out the site here: [https://rossien.com](https://rossien.com)
 
 ## Running

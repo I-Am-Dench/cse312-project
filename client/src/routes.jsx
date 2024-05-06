@@ -12,6 +12,7 @@ import Layout from './layout/Layout';
 import Board from './page/Board';
 import Setting from './page/Setting';
 import Chat from './page/Chat';
+import Sketch from './page/Sketch';
 const router = createHashRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
@@ -46,6 +47,14 @@ const router = createHashRouter(
         element={
           <PrivateRoute>
             <Chat />
+          </PrivateRoute>
+        }
+      ></Route>
+      <Route
+        path="game"
+        element={
+          <PrivateRoute>
+            <Sketch />
           </PrivateRoute>
         }
       ></Route>
