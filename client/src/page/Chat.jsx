@@ -13,8 +13,13 @@ export default function Chat() {
     }
     socket.emit('join', { room: 'global' });
 
+    const refreshInterval = setInterval(() => {
+      socket.emit('refresh_log', { room: 'global' });
+    }, 600000); // Refresh every 10 seconds
+
     return () => {
       socket.emit('leave', { room: 'global' });
+      clearInterval(refreshInterval);
     };
   }, []);
 
@@ -24,23 +29,18 @@ export default function Chat() {
     };
     const onReciveMessage = data => {
       console.log(data);
-      setLog([...log, data]);
+      setLog(prevLog => [...prevLog, data]);
     };
     const onStatus = data => {
       console.log(data);
     };
     const updateLog = data => {
       const payload = data.payload;
-      setLog([...payload]);
+      setLog(payload);
     };
     const handleErr = err => {
-      // the reason of the error, for example "xhr poll error"
       console.log(err.message);
-
-      // some additional description, for example the status code of the initial HTTP response
       console.log(err.description);
-
-      // some additional context, for example the XMLHttpRequest object
       console.log(err.context);
     };
 
@@ -57,24 +57,23 @@ export default function Chat() {
       socket.off('status', onStatus);
       socket.off('connect_error', handleErr);
     };
-  }, [log]);
+  }, []);
 
   return (
     <Flex width={'100%'} flexDir={'column'}>
-      {log.map(item => {
-        console.log(item);
-        return (
-          <Message
-            isUser={item.user == user}
-            text={`${item.user}: ${item.message}`}
-            avatar={item.avatar}
-          />
-        );
-      })}
+      {log.map(item => (
+        <Message
+          key={item.id}
+          isUser={item.user === user}
+          text={`${item.user}: ${item.message}`}
+          avatar={item.avatar}
+        />
+      ))}
       <ChatTextArea />
     </Flex>
   );
 }
+
 function Message(props) {
   const { isUser, text, avatar } = props;
   return (
@@ -97,11 +96,11 @@ function Message(props) {
 function ChatTextArea() {
   const inputRef = useRef(null);
   function handleSend() {
-    console.log(inputRef.current.value);
-    const _message = inputRef.current.value;
-    inputRef.current.value = '';
-    if (_message != '')
-      socket.emit('send_message', { room: 'global', message: _message });
+    const message = inputRef.current.value.trim();
+    if (message !== '') {
+      socket.emit('send_message', { room: 'global', message });
+      inputRef.current.value = '';
+    }
   }
   return (
     <Flex width={'100%'}>
@@ -117,7 +116,7 @@ function ChatTextArea() {
         ml={'15px'}
         onClick={handleSend}
       >
-        send
+        Send
       </Button>
     </Flex>
   );
