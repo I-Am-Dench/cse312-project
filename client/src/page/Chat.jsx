@@ -16,7 +16,7 @@ export default function Chat() {
 
     const refreshInterval = setInterval(() => {
       socket.emit('refresh_log', { room: 'global' });
-    }, 600000); // Refresh every 10 minutes
+    }, 6000); // Refresh every 1 minutes
 
     return () => {
       socket.emit('leave', { room: 'global' });

@@ -15,7 +15,7 @@ def add_chat(room, message, chatID, avatar):
     }
     _chats.insert_one(new_chat)
 
-    # delete message after 1 minute
+    # delete message after 10 minute
     timer = threading.Timer(600.0, delete_message, [new_chat])
     timer.start()
 
