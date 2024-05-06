@@ -1,4 +1,4 @@
-import { Avatar, Button, Divider, Flex, Input, Text } from '@chakra-ui/react';
+import { Avatar, Button, Flex, Input, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 
 import socket from '../socket';
@@ -7,6 +7,7 @@ import { useOutletContext } from 'react-router-dom';
 export default function Chat() {
   const [log, setLog] = useState([]);
   const { user } = useOutletContext();
+
   useEffect(() => {
     if (!socket.connected) {
       socket.connect();
@@ -15,7 +16,7 @@ export default function Chat() {
 
     const refreshInterval = setInterval(() => {
       socket.emit('refresh_log', { room: 'global' });
-    }, 600000); // Refresh every 10 seconds
+    }, 600000); // Refresh every 10 minutes
 
     return () => {
       socket.emit('leave', { room: 'global' });
@@ -24,46 +25,28 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-    const onConnect = data => {
-      console.log(data);
-    };
-    const onReciveMessage = data => {
-      console.log(data);
-      setLog(prevLog => [...prevLog, data]);
-    };
-    const onStatus = data => {
-      console.log(data);
-    };
-    const updateLog = data => {
-      const payload = data.payload;
-      setLog(payload);
-    };
-    const handleErr = err => {
-      console.log(err.message);
-      console.log(err.description);
-      console.log(err.context);
-    };
-
-    socket.on('get_chat_log', updateLog);
-    socket.on('con', onConnect);
-    socket.on('status', onStatus);
-    socket.on('receive_message', onReciveMessage);
-    socket.on('connect_error', handleErr);
+    socket.on('get_chat_log', updateLog => {
+      setLog(updateLog.payload);
+    });
+    socket.on('receive_message', message => {
+      setLog(prevLog => [...prevLog, message]);
+    });
 
     return () => {
-      socket.off('get_chat_log', updateLog);
-      socket.off('con', onConnect);
-      socket.off('receive_message', onReciveMessage);
-      socket.off('status', onStatus);
-      socket.off('connect_error', handleErr);
+      socket.off('get_chat_log');
+      socket.off('receive_message');
     };
   }, []);
 
   return (
     <Flex width={'100%'} flexDir={'column'}>
-      {log.map(item => (
+      {/* notification */}
+      <Text textAlign="center" p={2} color="gray.600">
+        All messages are removed every 10 minutes.
+      </Text>
+      {log.map((item, index) => (
         <Message
-          key={item.id}
+          key={index}  // Use unique id if available
           isUser={item.user === user}
           text={`${item.user}: ${item.message}`}
           avatar={item.avatar}
@@ -74,8 +57,7 @@ export default function Chat() {
   );
 }
 
-function Message(props) {
-  const { isUser, text, avatar } = props;
+function Message({ isUser, text, avatar }) {
   return (
     <Flex w="100%" justify={isUser ? 'flex-end' : 'flex-start'}>
       <Avatar src={avatar} alignSelf={'center'} marginX={'10px'} />
@@ -95,6 +77,7 @@ function Message(props) {
 
 function ChatTextArea() {
   const inputRef = useRef(null);
+
   function handleSend() {
     const message = inputRef.current.value.trim();
     if (message !== '') {
@@ -102,6 +85,7 @@ function ChatTextArea() {
       inputRef.current.value = '';
     }
   }
+
   return (
     <Flex width={'100%'}>
       <Input
