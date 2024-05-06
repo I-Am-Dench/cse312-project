@@ -1,6 +1,7 @@
 import os
 import sys
 import uuid
+from datetime import datetime
 
 from flask import Flask, request, jsonify, Response, Request, send_from_directory
 from flask_socketio import SocketIO, emit, join_room, leave_room, disconnect
@@ -12,6 +13,7 @@ import jwt
 from .auth import with_valid_session
 from .rate import RateLimiter
 from .database import accounts, session, comments, boards, chat
+
 
 
 def get_session_username(request: Request):
@@ -290,15 +292,23 @@ def create_app(test_config=None):
     @socketio.on("join")
     def on_join(data):
         token = request.cookies.get("AUTH_TOKEN")
-        if token == None and session.validateSession(token):
+        if token is None and session.validateSession(token):
             disconnect()
             return
-        username = get_user_from_token(request.cookies.get("AUTH_TOKEN"))
+
+        username = get_user_from_token(token)
         room = data["room"]
         join_room(room)
         emit("status", {"msg": f"{username} has entered the room."}, room=room)
+
         chats_log = chat.get_chats(room)
-        emit("get_chat_log", {"payload": chats_log}, to=request.sid)
+        formatted_chats_log = [
+            {**chat, "timestamp": chat['timestamp'].isoformat() if isinstance(chat['timestamp'], datetime) else chat[
+                'timestamp']}
+            for chat in chats_log
+        ]
+
+        emit("get_chat_log", {"payload": formatted_chats_log}, to=request.sid)
 
     @socketio.on("leave")
     def on_leave(data):
@@ -344,5 +354,16 @@ def create_app(test_config=None):
             except jwt.ExpiredSignatureError:
                 return None
         return None
+
+    @socketio.on("refresh_log")
+    def handle_refresh_log(data):
+        room = data['room']
+        chats_log = chat.get_chats(room)
+        formatted_chats_log = [
+            {**chat, "timestamp": chat['timestamp'].isoformat() if isinstance(chat['timestamp'], datetime) else chat[
+                'timestamp']}
+            for chat in chats_log
+        ]
+        emit("get_chat_log", {"payload": formatted_chats_log}, room=request.sid)
 
     return app
